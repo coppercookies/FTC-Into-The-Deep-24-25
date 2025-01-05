@@ -43,22 +43,11 @@ public class Red_Front extends LinearOpMode {
         claw = hardwareMap.get(ServoImplEx.class, "claw");
         RServo = hardwareMap.get(CRServoImplEx.class,"RServo" );
         LServo = hardwareMap.get(CRServoImplEx.class,"LServo" );
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
 
-        // Action ArmAction;
-        // Actions.runBlocking(
-//                drive.actionBuilder(beginPose)
-//                        .lineToX(64)
-//                        .stopAndAdd(new ArmAction(arm, 2000,1))
-//                        .stopAndAdd(new ClawAction(claw, -1))
-//                        .waitSeconds(3)
-////
-////                        .stopAndAdd(new ArmAction(arm, 0))
-////                        .lineToX(0)
-//                        .build());
-        // X - 1 unit is 1 inch
-        // Y - 1 unit is 2 inches
 
         Actions.runBlocking(
                 //new ParallelAction(
@@ -88,35 +77,50 @@ public class Red_Front extends LinearOpMode {
         int armPos;
         boolean initialized;
         int startArmPos;
+        int armEndPos;
+        boolean goingUp;
         public ArmAction(DcMotor arm, int armPos, double armPower) {
             this.arm = arm;
             this.armPower = armPower;
             this.armPos = armPos;
-            initialized = false;
-            startArmPos = 0;
+            this.initialized = false;
+            this.startArmPos = 0;
+            this.armEndPos = 0;
+            if (armPos > 0)
+                this.goingUp = false;
+            else
+                this.goingUp = true;
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if(!initialized){
+            if(!initialized) {
                 startArmPos = arm.getCurrentPosition();
-                arm.setTargetPosition(armPos - startArmPos);
+                armEndPos = armPos + startArmPos;
+                arm.setTargetPosition(armEndPos);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 arm.setPower(armPower);
                 initialized = true;
             }
 
-            if (arm.getCurrentPosition() < armPos) {
-                return true;
+            if (goingUp) {
+                if (arm.getCurrentPosition() >= armEndPos) {
+                    return true;
+                }
             }
-//            if (arm.getCurrentPosition() != armPos) {
+            else {
+                if (arm.getCurrentPosition() <= armEndPos) {
+                    return true;
+                }
+            }
+//            if (armSlider.getCurrentPosition() != armSliderPos) {
 //                return true;
 //            }
-
-            arm.setPower(0);
+            arm.setPower(0.25);
             return false;
         }
     }
+
 
     public class ArmSliderAction implements Action {
         DcMotor armSlider;
@@ -124,47 +128,62 @@ public class Red_Front extends LinearOpMode {
         int armSliderPos;
         boolean initialized;
         int startArmSliderPos;
+        int armSliderEndPos;
+        boolean goingUp;
         public ArmSliderAction(DcMotor armSlider, int armSliderPos, double armSliderPower) {
             this.armSlider = armSlider;
             this.armSliderPower = armSliderPower;
             this.armSliderPos = armSliderPos;
-            initialized = false;
-            startArmSliderPos = 0;
+            this.initialized = false;
+            this.startArmSliderPos = 0;
+            this.armSliderEndPos = 0;
+            if (armSliderPos > 0)
+                this.goingUp = false;
+            else
+                this.goingUp = true;
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if(!initialized) {
                 startArmSliderPos = armSlider.getCurrentPosition();
-                armSlider.setTargetPosition(armSliderPos - startArmSliderPos);
+                armSliderEndPos = armSliderPos + startArmSliderPos;
+                armSlider.setTargetPosition(armSliderEndPos);
                 armSlider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 armSlider.setPower(armSliderPower);
                 initialized = true;
             }
 
-            if (armSlider.getCurrentPosition() < armSliderPos){
-                return true;
+            if (goingUp)
+            {
+                if (armSlider.getCurrentPosition() >= armSliderEndPos) {
+                    return true;
+                }
             }
-
+            else
+            {
+                if (armSlider.getCurrentPosition() <= armSliderEndPos) {
+                    return true;
+                }
+            }
 //            if (armSlider.getCurrentPosition() != armSliderPos) {
 //                return true;
 //            }
-
+            //Negative goes up
             armSlider.setPower(0);
             return false;
         }
     }
 
+
     public class IntakeAction implements Action {
         CRServo RServo;
         CRServo LServo;
-        CRServo topTake;
         double intakePower;
 
-        public IntakeAction(CRServo RServo,CRServo LServo, CRServo topTake, double intakePower) {
+        public IntakeAction(CRServo RServo,CRServo LServo, double intakePower) {
             this.RServo = RServo;
             this.LServo = LServo;
-            this.topTake = topTake;
             this.intakePower = intakePower;
         }
 
@@ -172,30 +191,9 @@ public class Red_Front extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             RServo.setPower(intakePower);
             LServo.setPower(-intakePower);
-            topTake.setPower(intakePower);
             return false;
         }
     }
-    ///////////////////////////////////////////////////////////////////////////
-    public class ClawAction implements Action {
-        Servo claw;
-        double clawPos;
-
-        public ClawAction(Servo claw, double clawPos) {
-            this.claw = claw;
-            this.clawPos = clawPos;
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            claw.setPosition(clawPos);
-            return false;
-        }
-    }
-
-
-
-
 
     //////////////////////////////////////////////////////////////////////////
     public class PatientClawAction implements Action {
