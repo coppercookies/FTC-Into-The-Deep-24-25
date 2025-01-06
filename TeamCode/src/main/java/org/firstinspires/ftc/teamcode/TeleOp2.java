@@ -92,9 +92,9 @@ public class TeleOp2 extends OpMode {
 
         zeroArmPos = arm.getCurrentPosition();
         telemetry.addData("CurrentArmPos", arm.getCurrentPosition());
-        zeroArmPos = zeroArmPos + zeroArmPosCorrection;
+        //zeroArmPos = zeroArmPos + zeroArmPosCorrection;
         telemetry.addData("zeroArmPos", zeroArmPos);
-        maxPos = zeroArmPos + 1200; // Add number for max
+        maxPos = zeroArmPos + 1050; // Add number for max
         //it was - we cahnged to +
         //reverseArm = false;
 
@@ -179,8 +179,8 @@ public class TeleOp2 extends OpMode {
             RServoPower = 0;
             LServoPower = 0;
         }
-        RServo.setPower(RServoPower);
         LServo.setPower(LServoPower);
+        RServo.setPower(RServoPower);
     }
 
     private void PivotServo() {
@@ -194,7 +194,8 @@ public class TeleOp2 extends OpMode {
                 pivotServo.setPosition(0.1);
                 pivotServoPos = pivotServo.getPosition();
             } else if (gamepad1.dpad_left) {
-                pivotServo.setPosition(0.38);
+                pivotServo.setPosition(0.18); //0.2
+                //parallel
             }
         }
 
@@ -289,23 +290,29 @@ public class TeleOp2 extends OpMode {
     else if (gamepad2.y)
         reverseArm = false;
 */
-        double armPower = 0.3;//0.0;
+        double armPower = 0.0;//0.0;
 
         if (gamepad1.dpad_down) {
             telemetry.addData("dPad_down", true);
             armPower = -0.3;
-            if (arm.getCurrentPosition() >= maxPos) {
+//            if (arm.getCurrentPosition() >= maxPos) {
+//                armPower = 0;
+//            }
+            if (arm.getCurrentPosition() <= zeroArmPos ) {
                 armPower = 0;
             }
         } else if (gamepad1.dpad_up) {
             telemetry.addData("dpad_up", true);
             armPower = 0.75;
-            if (arm.getCurrentPosition() <= zeroArmPos ) {
-            armPower = 0;
+            if (arm.getCurrentPosition() >= maxPos) {
+                armPower = 0;
             }
+//            if (arm.getCurrentPosition() <= zeroArmPos ) {
+//            armPower = 0;
+//            }
         } else {
             if (arm.getCurrentPosition() <= maxPos) {
-                armPower = 0.3;
+                armPower = 0.2;
             }
         }
         arm.setPower(armPower);

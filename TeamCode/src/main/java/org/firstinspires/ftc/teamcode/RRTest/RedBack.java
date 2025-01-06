@@ -95,28 +95,37 @@ public class RedBack extends LinearOpMode {
 //                .waitSeconds(2)
                 //Be above the block
                 .strafeToConstantHeading(new Vector2d(38,-5))
-                .waitSeconds(1)
-                .lineToX(47.5)
+                //1/6
+                //.waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(48,5))
+                //.lineToX(48)//47.5
                 .build();
 
-        Action pushBlock = drive.actionBuilder(new Pose2d(47.5,-5,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(47.5,-57))
+        Action pushBlock = drive.actionBuilder(new Pose2d(48,-5,Math.toRadians(360)))
+                .strafeToConstantHeading(new Vector2d(48,-57))
                 .waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(44,-58))
+                .strafeToConstantHeading(new Vector2d(48,-45))
+//                .waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(34,-58.2))
 
                 .waitSeconds(2)
                 .build();
 //
-//        Action moveToSub2 = drive.actionBuilder(new Pose2d(45,-61,Math.toRadians(360)))
-//                .strafeToConstantHeading(new Vector2d(45,-50))
-//                .strafeToLinearHeading(new Vector2d(0, -32),Math.toRadians(180))
-//                .build();
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(34,-58.2,Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(4, -30.6),Math.toRadians(180))
+                .build();
+
+        Action moveToPark = drive.actionBuilder(new Pose2d(4,-31,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(48, -57),Math.toRadians(360))
+                .build();
+
 
 
 
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
+
                 new ParallelAction(
                     moveToSub,
                     new ClawSliderAction(clawSlider,-2100,1)
@@ -131,22 +140,25 @@ public class RedBack extends LinearOpMode {
                     moveToBlock,
                     new ClawSliderAction(clawSlider,1400,0.8)
                 ),
-//
+
                 new SequentialAction(
                         pushBlock,
                         //The wait is in pushBlock itself
                         new PatientClawAction(claw,0.7)
+                ),
+
+                new ParallelAction(
+                        moveToSub2,
+                        new ClawSliderAction(clawSlider,-1680,0.5)
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 280, 0.8),
+                        new PatientClawAction(claw, 0.0)
+                ),
+                new ParallelAction(
+                        moveToPark,
+                        new ClawSliderAction(clawSlider, 1400, 0.8)
                 )
-//
-//                new ParallelAction(
-//                        moveToSub2,
-//                        new ClawSliderAction(clawSlider,1000,-0.5)
-//                ),
-//
-//                new SequentialAction(
-//                    new ClawSliderAction(clawSlider,200,0.5),
-//                    new ClawAction(claw, 0)
-//                )
 
             )
          );
