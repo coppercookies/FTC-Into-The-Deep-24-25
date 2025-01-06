@@ -24,6 +24,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+import kotlin.jvm.internal.TypeParameterReference;
+
 @Autonomous (name = "RedFront")
 public class RedFront extends LinearOpMode {
 
@@ -49,7 +51,10 @@ public class RedFront extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-//        Actions.runBlocking();
+//        Actions.runBlocking(
+//                new PivotServoAction(pivotServo, 0)
+//        );
+
         waitForStart();
 
         Action wait1Second = drive.actionBuilder(beginPose)
@@ -61,39 +66,89 @@ public class RedFront extends LinearOpMode {
                 .build();
 
         Action turnToBlock1 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(225)))
-                .strafeToLinearHeading(new Vector2d(-46.5, -40), Math.toRadians(90))
-                //.lineToY(-30)
+                .strafeToLinearHeading(new Vector2d(-45.5, -43), Math.toRadians(90),
+                        new TranslationalVelConstraint(60))
                 .build();
-        Action pickBlock1 = drive.actionBuilder(new Pose2d(-46.5, -40, Math.toRadians(90)))
-                .waitSeconds(2)
-                .strafeToConstantHeading(new Vector2d(-46.5, -34), new TranslationalVelConstraint(10))
+        Action pickBlock1 = drive.actionBuilder(new Pose2d(-45.5, -43, Math.toRadians(90)))
+                .waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(-45.5, -35), new TranslationalVelConstraint(7))
                 .build();
 
+        Action moveToBasket2 = drive.actionBuilder(new Pose2d(-45.5,-35,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45))
+                .build();
+
+        Action turnToBlock2 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-56, -43), Math.toRadians(90))
+                .build();
+        Action pickBlock2 = drive.actionBuilder(new Pose2d(-56, -43, Math.toRadians(90)))
+                .waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(-56, -35), new TranslationalVelConstraint(7))
+                .build();
+        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-56,-35,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45))
+                .build();
 
         Actions.runBlocking(new SequentialAction(
 
                         new ParallelAction(
                                 moveToBasket,
-                                new ArmAction(arm, 1100, 0.8),
+                                new ArmAction(arm, 1100, 1),
                                 new PivotServoAction(pivotServo, 0.7)
                         ),
+                        //arm 15 -> 249
+                        //slider 741 -> 2763
+                        //
                         new SequentialAction(
-                                new ArmSliderAction(armSlider, 1800, 0.6),
-                                new IntakeAction(RServo,LServo,-0.3,1),
-                                new ArmSliderAction(armSlider, -1600,1),
+                                new ArmSliderAction(armSlider, 1850, 1),
+                                new IntakeAction(RServo,LServo,-0.5,1.3),
+                                new ArmSliderAction(armSlider, -1190,1),
                                 wait1Second
                         ),
 
+                        //slider 400
+                        //arm 78
+
                         new ParallelAction(
                                 turnToBlock1,
-                                new ArmAction(arm, -1050, 0.6),
-                                new PivotServoAction(pivotServo,0.18)
+                                new ArmAction(arm, -1015, 0.9)
                         ),
+
                         new ParallelAction(
                                 pickBlock1,
-                                new ArmAction(arm, -50, 0.3),
+                                new IntakeAction(RServo, LServo, 1, 3),
+                                new PivotServoAction(pivotServo,0.03)//0.08
+                        ),
+
+                        new SequentialAction(
+                                moveToBasket2,
+                                new ArmAction(arm, 1290, 1),
+                                new ArmSliderAction(armSlider,700,1),
+                                new PivotServoAction(pivotServo, 0),
+                                new IntakeAction(RServo,LServo,-1,2),
+                                new ArmSliderAction(armSlider,-700,1)
+                        ),
+
+                        new ParallelAction(
+                                turnToBlock2,
+                                new ArmAction(arm, -1290,1),
+                                new PivotServoAction(pivotServo,0.03)
+
+                        ),
+                        new ParallelAction(
+                                pickBlock2,
                                 new IntakeAction(RServo, LServo, 1, 3)
+                        ),
+                        new SequentialAction(
+                                moveToBasket3,
+                                new ArmAction(arm, 1290, 1),
+                                new ArmSliderAction(armSlider,700,1),
+                                new PivotServoAction(pivotServo, 0),
+                                new IntakeAction(RServo,LServo,-1,2),
+                                new ArmSliderAction(armSlider,-700,1)
                         )
+
+
 
 
 //                                .strafeToLinearHeading(new Vector2d(-48,-40),Math.toRadians(90))
@@ -202,10 +257,8 @@ public class RedFront extends LinearOpMode {
                     return true;
                 }
             }
-//            if (armSlider.getCurrentPosition() != armSliderPos) {
-//                return true;
-//            }
-            armSlider.setPower(0.25);
+
+            armSlider.setPower(0);
             return false;
         }
     }
@@ -229,11 +282,11 @@ public class RedFront extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
+                RServo.setPower(-intakePower);
+                LServo.setPower(intakePower);
             }
 
             if (timer.seconds() < intakeTime) {
-                RServo.setPower(-intakePower);
-                LServo.setPower(intakePower);
                 return true;
             } else {
                 return false;

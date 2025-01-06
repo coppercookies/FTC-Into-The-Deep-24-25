@@ -169,17 +169,17 @@ public class TeleOp2 extends OpMode {
 
             telemetry.addData("intake in", true);
             RServoPower  = -1.0;
-            LServoPower  = 1.0;
+            LServoPower  = -1.0;
         } else if (gamepad1.x) {
 
             telemetry.addData("intake out", true);
             RServoPower = 1.0;
-            LServoPower = -1.0;
+            LServoPower = 1.0;
         } else {
             RServoPower = 0;
             LServoPower = 0;
         }
-        LServo.setPower(LServoPower);
+        LServo.setPower(-LServoPower);
         RServo.setPower(RServoPower);
     }
 
