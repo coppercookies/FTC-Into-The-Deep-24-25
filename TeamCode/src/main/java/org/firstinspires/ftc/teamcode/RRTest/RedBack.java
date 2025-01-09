@@ -6,7 +6,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -24,6 +26,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+
+import java.util.Vector;
 
 @Autonomous (name = "RedBack")
 public class RedBack extends LinearOpMode {
@@ -97,7 +101,7 @@ public class RedBack extends LinearOpMode {
                 .strafeToConstantHeading(new Vector2d(38,-5))
                 //1/6
                 //.waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(48,5))
+                .strafeToConstantHeading(new Vector2d(48,-5))
                 //.lineToX(48)//47.5
                 .build();
 
@@ -106,18 +110,26 @@ public class RedBack extends LinearOpMode {
                 .waitSeconds(1)
                 .strafeToConstantHeading(new Vector2d(48,-45))
 //                .waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(34,-58.2))
+                .strafeToConstantHeading(new Vector2d(31.3,-58.2))
 
-                .waitSeconds(2)
+                //.waitSeconds(2)
                 .build();
 //
-        Action moveToSub2 = drive.actionBuilder(new Pose2d(34,-58.2,Math.toRadians(360)))
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(31.3,-58.2,Math.toRadians(360)))
                 .strafeToLinearHeading(new Vector2d(4, -30.6),Math.toRadians(180))
                 .build();
 
-        Action moveToPark = drive.actionBuilder(new Pose2d(4,-31,Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(48, -57),Math.toRadians(360))
+        Action moveToPickup2 = drive.actionBuilder(new Pose2d(4,-30.6,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(31.6, -54),Math.toRadians(360))
+                .strafeTo(new Vector2d(31.6,-57.6))
                 .build();
+        Action moveToSub3 = drive.actionBuilder(new Pose2d(31.6,-57.6,Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(6, -30.6),Math.toRadians(180))
+                .build();
+        Action park = drive.actionBuilder(new Pose2d(6,-30.6,Math.toRadians(180)))
+                        .strafeToLinearHeading(new Vector2d(47,-56),Math.toRadians(90),
+                                new TranslationalVelConstraint(70))
+                                .build();
 
 
 
@@ -138,7 +150,7 @@ public class RedBack extends LinearOpMode {
 
                 new ParallelAction(
                     moveToBlock,
-                    new ClawSliderAction(clawSlider,1400,0.8)
+                    new ClawSliderAction(clawSlider,1395,0.8)
                 ),
 
                 new SequentialAction(
@@ -149,16 +161,36 @@ public class RedBack extends LinearOpMode {
 
                 new ParallelAction(
                         moveToSub2,
-                        new ClawSliderAction(clawSlider,-1680,0.5)
+                        new ClawSliderAction(clawSlider,-1700,0.5)
                 ),
                 new SequentialAction(
-                        new ClawSliderAction(clawSlider, 280, 0.8),
+                        new ClawSliderAction(clawSlider, 315, 0.8),
                         new PatientClawAction(claw, 0.0)
                 ),
                 new ParallelAction(
-                        moveToPark,
-                        new ClawSliderAction(clawSlider, 1400, 0.8)
+                        moveToPickup2,
+                        new ClawSliderAction(clawSlider, 1395, 0.8)
+                ),
+                new SequentialAction(
+                        new PatientClawAction(claw,0.7),
+                        new ClawSliderAction(clawSlider, -400, 0.8)
+                ),
+                new ParallelAction(
+                        moveToSub3,
+                         new ClawSliderAction(clawSlider, -1300, 0.8)
+
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 315, 0.8),
+                        new PatientClawAction(claw, 0.0)
+
+                ),
+                new ParallelAction(
+                        park,
+                        new ClawSliderAction(clawSlider,1780,0.8 )
                 )
+
+
 
             )
          );
@@ -339,7 +371,7 @@ public class RedBack extends LinearOpMode {
                 claw.setPosition(clawPos);
             }
 
-            if (timer.seconds() < 0.8) {
+            if (timer.seconds() < 0.45) {
                 return true;
             } else {
                 return false;

@@ -1,5 +1,5 @@
 //24-25 Copper Cookies TeleOp
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -15,8 +15,8 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name="TeleOp2", group="Iterative OpMode")
-public class TeleOp2 extends OpMode {
+@TeleOp(name="IntakeTest", group="Iterative OpMode")
+public class IntakeTest extends OpMode {
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -26,8 +26,6 @@ public class TeleOp2 extends OpMode {
     private int maxArmSliderPos;
     private int zeroArmSliderPos;
     private DcMotor clawSlider;
-    private int zeroClawSliderPos;
-    private boolean clawEnabled;
     private DcMotor arm;
 
     private int maxPos;
@@ -56,59 +54,14 @@ public class TeleOp2 extends OpMode {
     @Override
     public void init() {
         // Init Drive ---------------------------------------------------------
-        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
+//        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+//        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+//        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+//        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+//        leftFront.setDirection(DcMotor.Direction.REVERSE);
+//        leftBack.setDirection(DcMotor.Direction.REVERSE);
         RServo = hardwareMap.get(CRServo.class, "RServo");
         LServo = hardwareMap.get(CRServo.class, "LServo");
-        pivotServo = hardwareMap.get(Servo.class, "pivotServo");
-        // Init IMU-- ------------------------------------------------------
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
-        ));
-        imu.initialize(parameters);
-
-
-        // Init ClawSlider + Claw -----------------------------------------------
-        clawSlider = hardwareMap.get(DcMotor.class, "clawSlider");
-        zeroClawSliderPos = clawSlider.getCurrentPosition();
-        //clawSlider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //clawSlider.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-        claw = hardwareMap.get(Servo.class, "claw");
-        clawEnabled = false;
-        // Init Hanging ------------------------------------------------------
-        hanging = hardwareMap.get(DcMotor.class, "hanging");
-        hanging.setDirection(DcMotor.Direction.REVERSE);
-        //hanging.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Init Arm -----------------------------------------------------------
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        zeroArmPos = arm.getCurrentPosition();
-        telemetry.addData("CurrentArmPos", arm.getCurrentPosition());
-        zeroArmPos = zeroArmPos + zeroArmPosCorrection;
-        telemetry.addData("zeroArmPos", zeroArmPos);
-        maxPos = zeroArmPos + 1200 - zeroArmPosCorrection; // Add number for max
-        //it was - we cahnged to +
-        //reverseArm = false;
-
-        // Init ArmSlider -----------------------------------------------------
-        armSlider = hardwareMap.get(DcMotor.class, "armSlider");
-        //armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        zeroArmSliderPos = armSlider.getCurrentPosition();
-        maxArmSliderPos = zeroArmSliderPos + 2000;
-        telemetry.addData("CurrentArmSliderPos", armSlider.getCurrentPosition());
-
-        // Init Intake --------------------------------------------------------
-        intake = hardwareMap.get(CRServo.class, "intake");
 
     }
 
@@ -119,22 +72,13 @@ public class TeleOp2 extends OpMode {
 
     @Override
     public void loop() {
-        //Drive();
-        FCDDrive();
-//        ClipDown();
-        ClawSlider();
+
         Intake();
-        Arm();
-        ArmSlider();
-        Hanging();
-        Claw();
-        PivotServo();
-//        ClawSliderTest();
+
     }
 
     //Right Stick Button
     //ClawSlider goes up manually
-
     private void ClipDown() {
         if (gamepad1.right_stick_button) {
             //Clip specimen
@@ -169,16 +113,15 @@ public class TeleOp2 extends OpMode {
 //        intake.setPower(intakePower);
 //    }
         if (gamepad1.b) {
+
             telemetry.addData("intake in", true);
             RServoPower  = -1.0;
             LServoPower  = -1.0;
         } else if (gamepad1.x) {
-            double servoPower = 1.0;
-            if (arm.getCurrentPosition() >= zeroArmPos + 600)
-                servoPower = 1.0;
+
             telemetry.addData("intake out", true);
-            RServoPower = servoPower;
-            LServoPower = servoPower;
+            RServoPower = 1.0;
+            LServoPower = 1.0;
         } else {
             RServoPower = 0;
             LServoPower = 0;
@@ -189,16 +132,16 @@ public class TeleOp2 extends OpMode {
 
     private void PivotServo() {
         double pivotServoPos = pivotServo.getPosition();
-        pivotServo.scaleRange(0,0.95);
+        pivotServo.scaleRange(0,0.7);
 
         if (arm.getCurrentPosition() > zeroArmPos + 600) {
-            pivotServo.setPosition(0.85);
+            pivotServo.setPosition(0.7);
         } else {
-            if (gamepad1.dpad_right) { // down
-                pivotServo.setPosition(0.85);
+            if (gamepad1.dpad_right) {
+                pivotServo.setPosition(0.1);
                 pivotServoPos = pivotServo.getPosition();
-            } else if (gamepad1.dpad_left) { // parallel
-                pivotServo.setPosition(0.67); //0.23
+            } else if (gamepad1.dpad_left) {
+                pivotServo.setPosition(0.18); //0.2
                 //parallel
             }
         }
@@ -254,19 +197,11 @@ public class TeleOp2 extends OpMode {
         } else if (gamepad1.right_stick_y > 0) {
             telemetry.addData("clawSlider down", true);
             clawSliderPower = 0.6;
-        } else if (gamepad1.right_bumper) {
-            //520
-            if (clawSlider.getCurrentPosition() < (zeroClawSliderPos - 520)) {
-                clawSliderPower = 0.5;
-            } else if (clawSlider.getCurrentPosition() > (zeroClawSliderPos - 520)) {
-                clawSliderPower = -0.5;
-            }
         } else {
             clawSliderPower = -0.1 ;
         }
         clawSlider.setPower(clawSliderPower);
         telemetry.addData("currentClawSliderPos", clawSlider.getCurrentPosition());
-
         //double clawSliderPower = gamepad2.right_stick_y;
         //clawSlider.setPower(clawSliderPower);
     }
@@ -306,16 +241,12 @@ public class TeleOp2 extends OpMode {
 
         if (gamepad1.dpad_down) {
             telemetry.addData("dPad_down", true);
-            armPower = 0.025;
+            armPower = -0.3;
+//            if (arm.getCurrentPosition() >= maxPos) {
+//                armPower = 0;
+//            }
             if (arm.getCurrentPosition() <= zeroArmPos ) {
-                if (armSlider.getCurrentPosition() > 200) {
-                    armPower = 0.75;
-                } else {
-                    armPower = 0.3;
-                }
-            }
-            else if (arm.getCurrentPosition() + 500 >= maxPos) {
-                armPower = -0.2;
+                armPower = 0;
             }
         } else if (gamepad1.dpad_up) {
             telemetry.addData("dpad_up", true);
@@ -323,16 +254,12 @@ public class TeleOp2 extends OpMode {
             if (arm.getCurrentPosition() >= maxPos) {
                 armPower = 0;
             }
+//            if (arm.getCurrentPosition() <= zeroArmPos ) {
+//            armPower = 0;
+//            }
         } else {
-            int currentArmPos = arm.getCurrentPosition();
-
-            if (currentArmPos <= maxPos)  {
-                if (currentArmPos >= zeroArmPos + 600)
-                    armPower = 0.2;
-                else if (armSlider.getCurrentPosition() > zeroArmSliderPos + 200)
-                    armPower = 0.35;
-                else
-                    armPower = 0.2;
+            if (arm.getCurrentPosition() <= maxPos) {
+                armPower = 0.2;
             }
         }
         arm.setPower(armPower);
@@ -353,7 +280,6 @@ public class TeleOp2 extends OpMode {
     }
 
     private void Claw() {
-
         //double ClawPower = 0.0;
         // if (gamepad1.right_bumper) {
         //   claw.setPosition(0.3); // close claw
@@ -363,15 +289,13 @@ public class TeleOp2 extends OpMode {
 //        } else {
 //            claw.setPosition(0); // close claw
 //        }
-        if (clawEnabled) {
-            if (gamepad1.left_bumper) {
-                claw.setPosition(0); // Open claw
-            } else {
-                claw.setPosition(0.7); // close claw
-            }
-
-            //claw.setPosition(ClawPower);
+        if (gamepad1.left_bumper) {
+            claw.setPosition(0); // Open claw
+        } else {
+            claw.setPosition(0.7); // close claw
         }
+
+        //claw.setPosition(ClawPower);
     }
 
     private void DriveToPos(int leftFrontTarget,
@@ -489,15 +413,14 @@ public class TeleOp2 extends OpMode {
         double adjustedVertical = vertical * Math.cos(heading) - strafe * Math.sin(heading);
         double adjustedStrafe = vertical * Math.sin(heading) + strafe * Math.cos(heading);
 
+
+
         double max = Math.max(Math.abs(adjustedStrafe) + Math.abs(adjustedVertical) + Math.abs(turn), 1);
 
         double RFPower = ((turn + (adjustedVertical - adjustedStrafe)) / max) * drivePower;
         double RBPower = ((turn + (adjustedVertical + adjustedStrafe)) / max) * drivePower;
         double LFPower = (((-turn) + (adjustedVertical + adjustedStrafe)) / max) * drivePower;
         double LBPower = (((-turn) + (adjustedVertical - adjustedStrafe)) / max) * drivePower;
-        if (RFPower > 0){
-            clawEnabled = true;
-        }
 
         rightFront.setPower(RFPower);
         rightBack.setPower(RBPower);
