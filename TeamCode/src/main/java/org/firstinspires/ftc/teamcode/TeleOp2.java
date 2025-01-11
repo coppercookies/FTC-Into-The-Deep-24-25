@@ -175,7 +175,7 @@ public class TeleOp2 extends OpMode {
         } else if (gamepad1.x) {
             double servoPower = 1.0;
             if (arm.getCurrentPosition() >= zeroArmPos + 600)
-                servoPower = 1.0;
+                servoPower = 0.8;
             telemetry.addData("intake out", true);
             RServoPower = servoPower;
             LServoPower = servoPower;
@@ -198,7 +198,7 @@ public class TeleOp2 extends OpMode {
                 pivotServo.setPosition(0.85);
                 pivotServoPos = pivotServo.getPosition();
             } else if (gamepad1.dpad_left) { // parallel
-                pivotServo.setPosition(0.67); //0.23
+                pivotServo.setPosition(0.66); //0.23
                 //parallel
             }
         }
@@ -256,9 +256,9 @@ public class TeleOp2 extends OpMode {
             clawSliderPower = 0.6;
         } else if (gamepad1.right_bumper) {
             //520
-            if (clawSlider.getCurrentPosition() < (zeroClawSliderPos - 520)) {
+            if (clawSlider.getCurrentPosition() < (zeroClawSliderPos - 470)) {
                 clawSliderPower = 0.5;
-            } else if (clawSlider.getCurrentPosition() > (zeroClawSliderPos - 520)) {
+            } else if (clawSlider.getCurrentPosition() > (zeroClawSliderPos - 470)) {
                 clawSliderPower = -0.5;
             }
         } else {

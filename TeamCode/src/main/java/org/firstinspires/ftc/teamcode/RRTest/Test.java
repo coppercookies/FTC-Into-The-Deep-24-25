@@ -26,8 +26,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import kotlin.jvm.internal.TypeParameterReference;
 
-@Autonomous (name = "RedFront")
-public class RedFront extends LinearOpMode {
+@Autonomous (name = "Test")
+public class Test extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,137 +56,33 @@ public class RedFront extends LinearOpMode {
                 new PivotServoAction(pivotServo, 0.85)
         );
 
-        Action wait1Second = drive.actionBuilder(beginPose)
-                .waitSeconds(1)
-                .build();
-        Action wait05Second = drive.actionBuilder(beginPose)
-                .waitSeconds(0.5)
-                .build();
-
-        Action moveToBasket = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-49.5, -50), Math.toRadians(228))
-                .build();
-
-        Action turnToBlock1 = drive.actionBuilder(new Pose2d(-49.5, -50, Math.toRadians(228)))
-                .strafeToLinearHeading(new Vector2d(-45, -43), Math.toRadians(90),
-                        new TranslationalVelConstraint(60))
-                .build();
-        Action pickBlock1 = drive.actionBuilder(new Pose2d(-45, -43, Math.toRadians(90)))
-                .waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(-45, -35), new TranslationalVelConstraint(6))
-                .build();
-
-        Action moveToBasket2 = drive.actionBuilder(new Pose2d(-45,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45))
-                .build();
-
-        Action turnToBlock2 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-57, -43), Math.toRadians(90))
-                .build();
-        Action pickBlock2 = drive.actionBuilder(new Pose2d(-57, -43, Math.toRadians(90)))
-                .waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(-57, -35), new TranslationalVelConstraint(6))
-                .build();
-        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-57,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45))
-                .build();
-        Action faceForward = drive.actionBuilder(new Pose2d(-52,-52,Math.toRadians(45)))
-                        .strafeToLinearHeading(new Vector2d(-40,-20),Math.toRadians(90))
-                        .build();
-
-
-
         waitForStart();
 
-        RServo.setPwmEnable();
-        LServo.setPwmEnable();
-        RServo.setPower(0);
-        LServo.setPower(0);
+
 
         Actions.runBlocking(new SequentialAction(
-
                 new ParallelAction(
-                        moveToBasket,
-                        new ArmAction(arm,armSlider, 1090, 1)
-                        //new IntakeAction(RServo,LServo,0,1) // Reset servo power
-                        //new PivotServoAction(pivotServo, 0.85) //0.7
-                ),
-                //arm 15 -> 249
-                //slider 741 -> 2763
-                //
-                new SequentialAction(
-                        wait1Second,
-                        new ArmSliderAction(armSlider, 1875, 1),
-                        new IntakeAction(RServo,LServo,-0.75,1.7),
-                        new ArmSliderAction(armSlider, -1380,1),//1190
-                        wait1Second
-                ),
-
-                //slider 400
-                //arm 78
-
-                new ParallelAction(
-                        turnToBlock1,
-                        new ArmAction(arm,armSlider, -1060, 0.4), //-1050
-                        new PivotServoAction(pivotServo,0.615)//0/65
-
-                ),
-
-                new ParallelAction(
-                        pickBlock1,
-                        new IntakeAction(RServo, LServo, 1, 2.6)
-                ),
-
-                new SequentialAction(
-                        moveToBasket2,
-                        new ArmAction(arm, armSlider, 1324, 0.7),//1290
-                        new ArmSliderAction(armSlider,1100,1),//1040
-                        wait05Second,
-                        new PivotServoAction(pivotServo, 0.46),
-                        new IntakeAction(RServo,LServo,-0.55,1.7),
-                        new PivotServoAction(pivotServo, 0.615),
-
-                        new ArmSliderAction(armSlider,-970,1)//-700
-                ),
-
-                new ParallelAction(
-                        turnToBlock2,
-                        new ArmAction(arm,armSlider, -1360,0.4)
-                        //new PivotServoAction(pivotServo,0.615)
-                ),
-
-                wait1Second,
-
-                new ParallelAction(
-                        pickBlock2,
-                        new IntakeAction(RServo, LServo, 1, 2.7)
+                        new ArmAction(arm, armSlider, 800,0.4),
+                        new IntakeAction(RServo, LServo,1,2)
 
                 ),
                 new SequentialAction(
-                        moveToBasket3,
-                        new ArmAction(arm,armSlider, 1370, 0.7),
-                        new ArmSliderAction(armSlider,875,1),//715
-                        wait1Second,
-                        new PivotServoAction(pivotServo, 0.52),
-                        new IntakeAction(RServo,LServo,-0.55,1.6)
-//                                new ArmSliderAction(armSlider,-700,1)
-                ),
-                new ParallelAction(
-                        faceForward,
-                        new ArmAction( arm, armSlider,-1300,0.7),
-                        new ArmSliderAction(armSlider,-1300,1)
+                    new IntakeAction(RServo, LServo,-1,2),
+                    new IntakeAction(RServo, LServo,1,2)
+,                    new IntakeAction(RServo, LServo,-1,2)
+,                    new IntakeAction(RServo, LServo,1,2)
+,                    new IntakeAction(RServo, LServo,-1,2),
+                        new IntakeAction(RServo, LServo,-1,2)
+                        ,                    new IntakeAction(RServo, LServo,1,2)
+                        ,                    new IntakeAction(RServo, LServo,-1,2)
+                        ,                    new IntakeAction(RServo, LServo,1,2)
+                        ,                    new IntakeAction(RServo, LServo,-1,2)
+
                 )
-//                                .strafeToLinearHeading(new Vector2d(-48,-40),Math.toRadians(90))
-//                                .waitSeconds(2)
-//                                .strafeToLinearHeading(new Vector2d(-52, -52),Math.toRadians(225))
-//                                .waitSeconds(4)
-//                                .strafeToLinearHeading(new Vector2d(-58,-40), Math.toRadians(90))
-//                                .waitSeconds(3)
-//                                .strafeToLinearHeading(new Vector2d(-52,-52),Math.toRadians(225))
-//                                .waitSeconds(4)
-            )
+        )
         );
     }
+
 
 
     public class ArmAction implements Action {
@@ -240,6 +136,7 @@ public class RedFront extends LinearOpMode {
                 arm.setPower(0.25);
             }
             return false;
+
         }
     }
 
@@ -317,7 +214,7 @@ public class RedFront extends LinearOpMode {
                 LServo.setPower(intakePower);
             }
 
-            if (timer.seconds() <= intakeTime) {
+            if (timer.seconds() < intakeTime) {
                 return true;
             } else {
                 RServo.setPower(0);
@@ -376,7 +273,7 @@ public class RedFront extends LinearOpMode {
 
             }
 
-            if (timer.seconds() < 1) {
+            if (timer.seconds() < 1.7) {
                 return true;
             } else {
                 return false;
