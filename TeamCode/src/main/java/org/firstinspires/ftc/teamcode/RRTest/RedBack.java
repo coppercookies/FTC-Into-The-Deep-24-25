@@ -72,15 +72,15 @@ public class RedBack extends LinearOpMode {
         DcMotorEx arm;
         DcMotorEx clawSlider;
         DcMotorEx armSlider;
-        CRServoImplEx RServo;
-        CRServoImplEx LServo;
+//        CRServoImplEx RServo;
+//        CRServoImplEx LServo;
 
         ServoImplEx claw;
         arm = hardwareMap.get(DcMotorEx.class, "arm");
         armSlider = hardwareMap.get(DcMotorEx.class, "armSlider");
         claw = hardwareMap.get(ServoImplEx.class, "claw");
-        RServo = hardwareMap.get(CRServoImplEx.class,"RServo" );
-        LServo = hardwareMap.get(CRServoImplEx.class,"LServo" );
+//        RServo = hardwareMap.get(CRServoImplEx.class,"RServo" );
+//        LServo = hardwareMap.get(CRServoImplEx.class,"LServo" );
         clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
         clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -314,27 +314,27 @@ public class RedBack extends LinearOpMode {
         }
     }
 
-    public class IntakeAction implements Action {
-        CRServo RServo;
-        CRServo LServo;
-        CRServo topTake;
-        double intakePower;
-
-        public IntakeAction(CRServo RServo,CRServo LServo, CRServo topTake, double intakePower) {
-            this.RServo = RServo;
-            this.LServo = LServo;
-            this.topTake = topTake;
-            this.intakePower = intakePower;
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            RServo.setPower(intakePower);
-            LServo.setPower(-intakePower);
-            topTake.setPower(intakePower);
-            return false;
-        }
-    }
+//    public class IntakeAction implements Action {
+//        CRServo RServo;
+//        CRServo LServo;
+//        CRServo topTake;
+//        double intakePower;
+//
+//        public IntakeAction(CRServo RServo,CRServo LServo, CRServo topTake, double intakePower) {
+//            this.RServo = RServo;
+//            this.LServo = LServo;
+//            this.topTake = topTake;
+//            this.intakePower = intakePower;
+//        }
+//
+//        @Override
+//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+//            RServo.setPower(intakePower);
+//            LServo.setPower(-intakePower);
+//            topTake.setPower(intakePower);
+//            return false;
+//        }
+//    }
     ///////////////////////////////////////////////////////////////////////////
     public class ClawAction implements Action {
         ServoImplEx claw;

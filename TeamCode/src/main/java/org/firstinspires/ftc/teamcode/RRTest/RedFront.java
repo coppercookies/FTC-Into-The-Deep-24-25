@@ -128,7 +128,7 @@ public class RedFront extends LinearOpMode {
                 new ParallelAction(
                         turnToBlock1,
                         new ArmAction(arm,armSlider, -1060, 0.4), //-1050
-                        new PivotServoAction(pivotServo,0.615)//0/65
+                        new PivotServoAction(pivotServo,0.611)//0.65
 
                 ),
 
@@ -143,10 +143,10 @@ public class RedFront extends LinearOpMode {
                         new ArmSliderAction(armSlider,1100,1),//1040
                         wait05Second,
                         new PivotServoAction(pivotServo, 0.46),
-                        new IntakeAction(RServo,LServo,-0.55,1.7),
-                        new PivotServoAction(pivotServo, 0.615),
+                        new IntakeAction(RServo,LServo,-0.47,1.7),//0.55
+                        new PivotServoAction(pivotServo, 0.611),
 
-                        new ArmSliderAction(armSlider,-970,1)//-700
+                        new ArmSliderAction(armSlider,-940,1)//-700
                 ),
 
                 new ParallelAction(
@@ -168,7 +168,7 @@ public class RedFront extends LinearOpMode {
                         new ArmSliderAction(armSlider,875,1),//715
                         wait1Second,
                         new PivotServoAction(pivotServo, 0.52),
-                        new IntakeAction(RServo,LServo,-0.55,1.6)
+                        new IntakeAction(RServo,LServo,-0.48,1.6)
 //                                new ArmSliderAction(armSlider,-700,1)
                 ),
                 new ParallelAction(
