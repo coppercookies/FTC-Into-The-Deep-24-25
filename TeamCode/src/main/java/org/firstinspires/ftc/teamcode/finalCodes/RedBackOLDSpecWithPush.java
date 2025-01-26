@@ -1,15 +1,19 @@
-package org.firstinspires.ftc.teamcode.RRTest;
+package org.firstinspires.ftc.teamcode.finalCodes;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.AngularVelConstraint;
+import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -27,10 +31,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+import java.util.Arrays;
 import java.util.Vector;
 
-@Autonomous (name = "OLD Red Back")
-public class RedBack extends LinearOpMode {
+@Autonomous (name = "RedBack 3 Spec and Push")
+public class RedBackOLDSpecWithPush extends LinearOpMode {
 
     //Claw Class try
 //    public class Claw {
@@ -65,22 +70,22 @@ public class RedBack extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //Pose2d beginPose = new Pose2d(-40, -62, Math.toRadians(180));
         Pose2d beginPose = new Pose2d(9, -61.5, Math.toRadians(180));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        DcMotorEx arm;
         DcMotorEx clawSlider;
-        DcMotorEx armSlider;
-//        CRServoImplEx RServo;
-//        CRServoImplEx LServo;
+
+        VelConstraint baseVelConstraint = new MinVelConstraint(Arrays.asList(
+                new TranslationalVelConstraint(45),
+                new AngularVelConstraint(Math.toRadians(180))
+        ));
+        AccelConstraint baseAccelConstraint = new ProfileAccelConstraint(-40, 40);
+
 
         ServoImplEx claw;
-        arm = hardwareMap.get(DcMotorEx.class, "arm");
-        armSlider = hardwareMap.get(DcMotorEx.class, "armSlider");
+
         claw = hardwareMap.get(ServoImplEx.class, "claw");
-//        RServo = hardwareMap.get(CRServoImplEx.class,"RServo" );
-//        LServo = hardwareMap.get(CRServoImplEx.class,"LServo" );
+
         clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
         clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -88,25 +93,23 @@ public class RedBack extends LinearOpMode {
                 new ClawAction(claw, 0.7)
         );
 
-//      claw.setPosition(0.7);
 
         Action moveToSub = drive.actionBuilder(beginPose)
                 .strafeToConstantHeading(new Vector2d(0,-31.5))
                 .build();
 
         Action moveToBlock = drive.actionBuilder(new Pose2d(0,-31.5,Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(34,-47),Math.toRadians(360))
+                .strafeToLinearHeading(new Vector2d(34,-47),Math.toRadians(360),baseVelConstraint,baseAccelConstraint)
 //                .waitSeconds(2)
                 //Be above the block
-                .strafeToConstantHeading(new Vector2d(38,-5))
+                .strafeToConstantHeading(new Vector2d(38,-5),baseVelConstraint,baseAccelConstraint)
                 //1/6
                 //.waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(48,-5))
-                //.lineToX(48)//47.5
+                .strafeToConstantHeading(new Vector2d(48,-5),baseVelConstraint,baseAccelConstraint)
                 .build();
 
         Action pushBlock = drive.actionBuilder(new Pose2d(48,-5,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(48,-57))
+                .strafeToConstantHeading(new Vector2d(48,-54))//57
                 .waitSeconds(1)
                 .strafeToConstantHeading(new Vector2d(48,-45))
 //                .waitSeconds(1)
@@ -126,10 +129,14 @@ public class RedBack extends LinearOpMode {
         Action moveToSub3 = drive.actionBuilder(new Pose2d(31.6,-57.6,Math.toRadians(360)))
                 .strafeToLinearHeading(new Vector2d(6, -30.6),Math.toRadians(180))
                 .build();
-        Action park = drive.actionBuilder(new Pose2d(6,-30.6,Math.toRadians(180)))
-                        .strafeToLinearHeading(new Vector2d(47,-56),Math.toRadians(90),
-                                new TranslationalVelConstraint(70))
-                                .build();
+
+        Action pushBlock2 = drive.actionBuilder(new Pose2d(6,-30.6,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(40,-44),Math.toRadians(360),baseVelConstraint,baseAccelConstraint)
+
+                .strafeToConstantHeading(new Vector2d(45,-5),baseVelConstraint,baseAccelConstraint)
+                .strafeToConstantHeading(new Vector2d(58,-5),baseVelConstraint,baseAccelConstraint)
+                .strafeToConstantHeading(new Vector2d(58,-55),new TranslationalVelConstraint(80),baseAccelConstraint)
+                .build();
 
 
 
@@ -138,62 +145,62 @@ public class RedBack extends LinearOpMode {
 
         Actions.runBlocking(new SequentialAction(
 
-                new ParallelAction(
-                    moveToSub,
-                    new ClawSliderAction(clawSlider,-2100,1)
-                ),
+                        new ParallelAction(
+                                moveToSub,
+                                new ClawSliderAction(clawSlider,-2100,1)
+                        ),
 
-                new SequentialAction(
-                    new ClawSliderAction(clawSlider, 280, 0.8),
-                    new PatientClawAction(claw, 0.0)
-                ),
+                        new SequentialAction(
+                                new ClawSliderAction(clawSlider, 280, 0.8),
+                                new PatientClawAction(claw, 0.0)
+                        ),
 
-                new ParallelAction(
-                    moveToBlock,
-                    new ClawSliderAction(clawSlider,1395,0.8)
-                ),
+                        new ParallelAction(
+                                moveToBlock,
+                                new ClawSliderAction(clawSlider,1395,0.8)
+                        ),
 
-                new SequentialAction(
-                        pushBlock,
-                        //The wait is in pushBlock itself
-                        new PatientClawAction(claw,0.7)
-                ),
+                        new SequentialAction(
+                                pushBlock,
+                                //The wait is in pushBlock itself
+                                new PatientClawAction(claw,0.7)
+                        ),
 
-                new ParallelAction(
-                        moveToSub2,
-                        new ClawSliderAction(clawSlider,-1700,0.5)
-                ),
-                new SequentialAction(
-                        new ClawSliderAction(clawSlider, 315, 0.8),
-                        new PatientClawAction(claw, 0.0)
-                ),
-                new ParallelAction(
-                        moveToPickup2,
-                        new ClawSliderAction(clawSlider, 1395, 0.8)
-                ),
-                new SequentialAction(
-                        new PatientClawAction(claw,0.7),
-                        new ClawSliderAction(clawSlider, -400, 0.8)
-                ),
-                new ParallelAction(
-                        moveToSub3,
-                         new ClawSliderAction(clawSlider, -1300, 0.8)
+                        new ParallelAction(
+                                moveToSub2,
+                                new ClawSliderAction(clawSlider,-1700,0.5)
+                        ),
+                        new SequentialAction(
+                                new ClawSliderAction(clawSlider, 315, 0.8),
+                                new PatientClawAction(claw, 0.0)
+                        ),
+                        new ParallelAction(
+                                moveToPickup2,
+                                new ClawSliderAction(clawSlider, 1395, 0.8)
+                        ),
+                        new SequentialAction(
+                                new PatientClawAction(claw,0.7),
+                                new ClawSliderAction(clawSlider, -400, 0.8)
+                        ),
+                        new ParallelAction(
+                                moveToSub3,
+                                new ClawSliderAction(clawSlider, -1300, 0.8)
 
-                ),
-                new SequentialAction(
-                        new ClawSliderAction(clawSlider, 315, 0.8),
-                        new PatientClawAction(claw, 0.0)
+                        ),
+                        new SequentialAction(
+                                new ClawSliderAction(clawSlider, 315, 0.8),
+                                new PatientClawAction(claw, 0.0)
 
-                ),
-                new ParallelAction(
-                        park,
-                        new ClawSliderAction(clawSlider,1780,0.8 )
+                        ),
+                        new ParallelAction(
+                                pushBlock2,
+                                new ClawSliderAction(clawSlider,1780,0.8 )
+                        )
+
+
+
                 )
-
-
-
-            )
-         );
+        );
 
         ///////////////////////////////
 //        .stopAndAdd(new ClawSliderAction(clawSlider,1000,-0.3))
@@ -314,7 +321,7 @@ public class RedBack extends LinearOpMode {
         }
     }
 
-//    public class IntakeAction implements Action {
+    //    public class IntakeAction implements Action {
 //        CRServo RServo;
 //        CRServo LServo;
 //        CRServo topTake;
@@ -371,7 +378,7 @@ public class RedBack extends LinearOpMode {
                 claw.setPosition(clawPos);
             }
 
-            if (timer.seconds() < 0.45) {
+            if (timer.seconds() < 0.25) {
                 return true;
             } else {
                 return false;

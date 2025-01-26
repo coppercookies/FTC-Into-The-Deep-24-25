@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.teleOp;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+@Disabled
 
 @TeleOp(name = "Try LED and Touch", group = "Concept")
 public class TryLEDAndTouch extends OpMode {

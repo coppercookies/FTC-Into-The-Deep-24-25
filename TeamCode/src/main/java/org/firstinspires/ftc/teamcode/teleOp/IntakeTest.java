@@ -1,5 +1,6 @@
 //24-25 Copper Cookies TeleOp
 package org.firstinspires.ftc.teamcode.teleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
+@Disabled
 
 @TeleOp(name="IntakeTest", group="Iterative OpMode")
 public class IntakeTest extends OpMode {

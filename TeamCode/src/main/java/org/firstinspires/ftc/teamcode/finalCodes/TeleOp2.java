@@ -1,5 +1,7 @@
 //24-25 Copper Cookies TeleOp
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.finalCodes;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -8,6 +10,7 @@ import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -30,13 +33,14 @@ public class TeleOp2 extends OpMode {
 
     private DcMotor clawSlider;
     private int zeroClawSliderPos;
+    private int zeroClawSliderPosCorrection = 500;
     private int maxClawSliderPos;
 
     private DcMotor arm;
 
     private int maxPos;
     private int zeroArmPos;
-    private final int zeroArmPosCorrection = 180; //
+    private final int zeroArmPosCorrection = 80; //180 with flywheel intake for zero pos
 
     //    private boolean reverseArm;
     private CRServo LServo;
@@ -57,8 +61,7 @@ public class TeleOp2 extends OpMode {
     private Servo claw;
     private boolean clawEnabled;
 
-
-    private CRServo armClaw;
+    private ServoImplEx armClaw;
     private double armClawPower;
 
     private CRServo pivotClaw;
@@ -67,11 +70,10 @@ public class TeleOp2 extends OpMode {
 
     //Sensors + etc
     DigitalChannel digitalTouch;
-    LED intake_LED_red;
-    LED intake_LED_green;
+    LED max_LED_red;
+    LED max_LED_green;
 
-    LED slider_LED_red;
-    LED slider_LED_green;
+
 
     IMU imu;
     Deadline gamepadRateLimit = new Deadline(250, TimeUnit.MILLISECONDS);
@@ -88,7 +90,8 @@ public class TeleOp2 extends OpMode {
         leftBack.setDirection(DcMotor.Direction.REVERSE);
 
         pivotClaw = hardwareMap.get(CRServo.class, "pivotClaw");
-        armClaw = hardwareMap.get(CRServo.class, "armClaw");
+        armClaw = hardwareMap.get(ServoImplEx.class, "armClaw");
+
 
 
 //        RServo = hardwareMap.get(CRServo.class, "RServo");
@@ -102,17 +105,12 @@ public class TeleOp2 extends OpMode {
         ));
         imu.initialize(parameters);
 
-        /*
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
-        intake_LED_green = hardwareMap.get(LED.class, "intake_led_green");
-        intake_LED_red = hardwareMap.get(LED.class, "intake_led_red");
-         */
 
         // Init ClawSlider + Claw -----------------------------------------------
         clawSlider = hardwareMap.get(DcMotor.class, "clawSlider");
         zeroClawSliderPos = clawSlider.getCurrentPosition();
-        maxClawSliderPos = zeroClawSliderPos - 2150;
+        zeroClawSliderPos = zeroClawSliderPos - zeroClawSliderPosCorrection;
+        maxClawSliderPos = zeroClawSliderPos - 1500;//-2150
         //clawSlider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //clawSlider.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -120,9 +118,9 @@ public class TeleOp2 extends OpMode {
         claw = hardwareMap.get(Servo.class, "claw");
         clawEnabled = false;
         // Init Hanging ------------------------------------------------------
-        hanging = hardwareMap.get(DcMotor.class, "hanging");
-        hanging.setDirection(DcMotor.Direction.REVERSE);
-        //hanging.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        hanging = hardwareMap.get(DcMotor.class, "hanging");
+//        hanging.setDirection(DcMotor.Direction.REVERSE);
+//        hanging.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Init Arm -----------------------------------------------------------
         arm = hardwareMap.get(DcMotor.class, "arm");
@@ -151,11 +149,11 @@ public class TeleOp2 extends OpMode {
         //Sensors +
 //        digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
 //        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
-//
-//        slider_LED_green = hardwareMap.get(LED.class, "slider_led");
-//        slider_LED_red = hardwareMap.get(LED.class, "slider_led");
-//        intake_LED_green = hardwareMap.get(LED.class, "intake led");
-//        intake_LED_red = hardwareMap.get(LED.class, "intake_led");
+
+        max_LED_green = hardwareMap.get(LED.class, "max_LED_green");
+        max_LED_red = hardwareMap.get(LED.class, "max_LED_red");
+
+
     }
 
     @Override
@@ -169,10 +167,10 @@ public class TeleOp2 extends OpMode {
         ClawSlider();
         ArmClaw();
         PivotClaw();
+//        Hanging();
 //        Intake();
         Arm();
         ArmSlider();
-        Hanging();
         Claw();
 //        PivotServo();
         ZeroPos();
@@ -182,6 +180,9 @@ public class TeleOp2 extends OpMode {
     private void ZeroPos() {
         if (gamepad2.y && YClicked) {
             zeroArmSliderPos = armSlider.getCurrentPosition();
+            zeroClawSliderPos = clawSlider.getCurrentPosition() - zeroClawSliderPosCorrection;
+            maxClawSliderPos = zeroClawSliderPos - 1500;
+         //   zeroClawSliderPos = clawSlider.getCurrentPosition() + zeroClawSliderPosCorrection;
             YClicked = false;
         }
         telemetry.addData("YClicked", YClicked);
@@ -258,7 +259,6 @@ public class TeleOp2 extends OpMode {
         telemetry.addData("PivotServoPos", pivotServoPos);
     }
 
-
 //    private void ClawSliderTest() {
 //        /////////////////////////////////// ARM SLIDER CODE
 //        double clawSliderTestPower = 0.0;
@@ -294,6 +294,19 @@ public class TeleOp2 extends OpMode {
         double clawSliderPower = 0.0;
         ///////////////////////////////// CLAW_SLIDER CODE
         telemetry.addData("gamepad1 y stick", gamepad1.right_stick_y);
+
+        if (YClicked){
+            if (gamepad1.right_stick_y > 0) {
+                telemetry.addData("clawSlider down", true);
+                clawSliderPower = 0.6;
+            }
+            else {
+                clawSliderPower = 0.0;
+            }
+            clawSlider.setPower(clawSliderPower);
+            return;
+        }
+
         if (gamepad1.right_stick_y < 0 && (clawSlider.getCurrentPosition() >= maxClawSliderPos)) {
             telemetry.addData("clawSlider up", true);
 //            if (gamepad1.right_stick_y < 0.5) {
@@ -303,19 +316,23 @@ public class TeleOp2 extends OpMode {
 //            }
             clawSliderPower = -1;
 
-        } else if (gamepad1.right_stick_y > 0) {
+        } else if (gamepad1.right_stick_y > 0 && (clawSlider.getCurrentPosition() <= zeroClawSliderPos)) {
             telemetry.addData("clawSlider down", true);
             clawSliderPower = 0.6;
-        } else if (gamepad1.right_bumper) {
-            //520
-            if (clawSlider.getCurrentPosition() < (zeroClawSliderPos - 470)) {
-                clawSliderPower = 0.5;
-            } else if (clawSlider.getCurrentPosition() > (zeroClawSliderPos - 470)) {
-                clawSliderPower = -0.5;
-            }
-        } else {
+
+//        } else if (gamepad1.right_bumper) {
+//            //520
+//            if (clawSlider.getCurrentPosition() < (zeroClawSliderPos - 470)) {
+//                clawSliderPower = 0.5;
+//            } else if (clawSlider.getCurrentPosition() > (zeroClawSliderPos - 470)) {
+//                clawSliderPower = -0.5;
+//            }
+        }
+        else {
             clawSliderPower = -0.1;
         }
+
+
         clawSlider.setPower(clawSliderPower);
         telemetry.addData("currentClawSliderPos", clawSlider.getCurrentPosition());
 
@@ -339,10 +356,20 @@ public class TeleOp2 extends OpMode {
             armSliderPower = 1.0;
             if (armSlider.getCurrentPosition() >= maxArmSliderPos) {
                 armSliderPower = 0;
+
             }
+
         }
 //        double servoPosition = Math.max(0, Math.min(armSlider.getCurrentPosition() / 5000, 1));
 //        pivotServo.setPosition(servoPosition);
+        if (armSlider.getCurrentPosition() >= maxArmSliderPos) {
+            max_LED_green.on();
+            max_LED_red.off();
+        } else {
+            max_LED_green.off();
+            max_LED_red.on();
+        }
+
         armSlider.setPower(armSliderPower);
     }
 
@@ -392,22 +419,22 @@ public class TeleOp2 extends OpMode {
         telemetry.addData("Current Arm Power: ", armPower);
     }
 
-    private void Hanging() {
-        double hangingPower = 0.0;
-        if (gamepad1.left_stick_y > 0) {
-            hangingPower = 0.9;
-        } else if (gamepad1.left_stick_y < 0) {
-            hangingPower = -0.9;
-        }
-        hanging.setPower(hangingPower);
-
-    }
+//    private void Hanging() {
+//        double hangingPower = 0.0;
+//        if (gamepad1.left_stick_y > 0) {
+//            hangingPower = 0.9;
+//        } else if (gamepad1.left_stick_y < 0) {
+//            hangingPower = -0.9;
+//        }
+//        hanging.setPower(hangingPower);
+//
+//    }
 
     private void PivotClaw() {
         if (gamepad1.dpad_right) {
-            pivotClawPower = 0.1;
+            pivotClawPower = 0.35;
         } else if (gamepad1.dpad_left) {
-            pivotClawPower = -0.1;
+            pivotClawPower = -0.35;
         } else {
             pivotClawPower = 0;
         }
@@ -415,28 +442,41 @@ public class TeleOp2 extends OpMode {
     }
 
     private void ArmClaw() {
-        if (gamepad1.x) {
-            armClawPower = -1.0; // Open claw
-        } else if (gamepad1.b)
-            armClawPower = 1.0; // close claw
-        else {
-            armClawPower = 0;
+//        if (gamepad1.x) {
+//            armClawPower = -0.35;
+//
+//        }// Open claw
+//        else if(gamepad1.b) {
+//            armClawPower = 0.2;
+//        }
+//        else {
+//            armClawPower = 0;
+//        }
+//        telemetry.addData("arm claw power", armClawPower);
+//        armClaw.setPower(armClawPower);
 
+
+        armClaw.scaleRange(0, 1);
+        if (gamepad1.x) {
+            armClaw.setPosition(0.4);
+        } else if (gamepad1.b) {
+            armClaw.setPosition(0.67);
         }
-        armClaw.setPower(armClawPower);
 
     }
 
     private void Claw() {
 
+        if (!clawEnabled)
+            return;
         //double ClawPower = 0.0;
         // if (gamepad1.right_bumper) {
         //   claw.setPosition(0.3); // close claw
         //} else
         if (gamepad1.left_bumper) {
-            claw.setPosition(0.7); // Open claw
+            claw.setPosition(0); // Open claw
         } else {
-            claw.setPosition(0); // close claw
+            claw.setPosition(0.7); // close claw
         }
     }
 
@@ -551,8 +591,8 @@ public class TeleOp2 extends OpMode {
                 imu.resetYaw();
                 gamepadRateLimit.reset();
                 AClicked = false;
-//                intake_LED_red.off();
-//                intake_LED_green.on();
+//                max_LED_red.off();
+//                max_LED_green.on();
 
             }
             telemetry.addData("AClicked", AClicked);
@@ -569,7 +609,7 @@ public class TeleOp2 extends OpMode {
         double RBPower = ((turn + (adjustedVertical + adjustedStrafe)) / max) * drivePower;
         double LFPower = (((-turn) + (adjustedVertical + adjustedStrafe)) / max) * drivePower;
         double LBPower = (((-turn) + (adjustedVertical - adjustedStrafe)) / max) * drivePower;
-        if (RFPower > 0) {
+        if (RFPower != 0) {
             clawEnabled = true;
         }
 

@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import kotlin.jvm.internal.TypeParameterReference;
 
+@Disabled
 @Autonomous (name = "Test")
 public class Test extends LinearOpMode {
 

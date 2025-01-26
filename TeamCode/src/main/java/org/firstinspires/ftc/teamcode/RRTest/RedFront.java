@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import kotlin.jvm.internal.TypeParameterReference;
 
-@Autonomous (name = "RedFront")
+@Autonomous (name = "OLD Red Front")
 public class RedFront extends LinearOpMode {
 
     @Override

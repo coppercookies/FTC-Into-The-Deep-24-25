@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.LED;
 
+@Disabled
 
 @TeleOp(name = "Try Slider LED and Touch", group = "Concept")
 public class TrySliderLEDAndTouch extends OpMode {
