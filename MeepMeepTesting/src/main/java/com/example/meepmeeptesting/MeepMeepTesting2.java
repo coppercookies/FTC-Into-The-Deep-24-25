@@ -8,7 +8,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class MeepMeepTesting2 {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -25,17 +25,12 @@ public class MeepMeepTesting {
                         .waitSeconds(1)
                         .strafeToConstantHeading(new Vector2d(10,-33))
 
-                //pick and move block 1
-                        .strafeToLinearHeading(new Vector2d(35,-45),Math.toRadians(25))
-                        .waitSeconds(1)
-                        .turnTo(Math.toRadians(315))
-                        .waitSeconds(1)
+                        .strafeToLinearHeading(new Vector2d(45,-45),Math.toRadians(315))
 
-                //pick and move block 2
-                        .strafeToLinearHeading(new Vector2d(55,-45),Math.toRadians(15))
-                        .waitSeconds(1)
-                        .turnTo(Math.toRadians(345))
-                        .waitSeconds(1)
+                        //pick up specimen 1
+                        .strafeToLinearHeading(new Vector2d(45,-45),Math.toRadians(360))
+                        .strafeToConstantHeading(new Vector2d(31.3,-58.2))
+
                         .build()
         );
 

@@ -130,7 +130,7 @@ public class TeleOp2 extends OpMode {
         telemetry.addData("CurrentArmPos", arm.getCurrentPosition());
         zeroArmPos = zeroArmPos + zeroArmPosCorrection;
         telemetry.addData("zeroArmPos", zeroArmPos);
-        maxPos = zeroArmPos + 1200 - zeroArmPosCorrection; // Add number for max
+        maxPos = zeroArmPos + 1030 - zeroArmPosCorrection; // Add number for max
         //it was - we cahnged to +
         //reverseArm = false;
 
@@ -138,7 +138,7 @@ public class TeleOp2 extends OpMode {
         armSlider = hardwareMap.get(DcMotor.class, "armSlider");
         //armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         zeroArmSliderPos = armSlider.getCurrentPosition();
-        maxArmSliderPos = zeroArmSliderPos + 2000;
+        maxArmSliderPos = zeroArmSliderPos + 2525;//2000
         telemetry.addData("CurrentArmSliderPos", armSlider.getCurrentPosition());
 
         // Init Intake --------------------------------------------------------
@@ -345,20 +345,21 @@ public class TeleOp2 extends OpMode {
         double armSliderPower = 0.0;
         telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
         if (gamepad1.a) {
-            //UP "y"
-            //telemetry.addData("y", true);
-            //telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
-            armSliderPower = -1.0;
+            if (armSlider.getCurrentPosition() > zeroArmSliderPos) {
+                armSliderPower = -1.0;
+            }
         } else if (gamepad1.y) {
-            //DOWN "a"
             //telemetry.addData("a", true);
             //telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
             armSliderPower = 1.0;
             if (armSlider.getCurrentPosition() >= maxArmSliderPos) {
                 armSliderPower = 0;
-
             }
-
+        }
+        if (arm.getCurrentPosition() > 700) {
+            maxArmSliderPos = zeroArmSliderPos + 2525;
+        } else {
+            maxArmSliderPos = zeroArmSliderPos + 2820;
         }
 //        double servoPosition = Math.max(0, Math.min(armSlider.getCurrentPosition() / 5000, 1));
 //        pivotServo.setPosition(servoPosition);
@@ -406,9 +407,9 @@ public class TeleOp2 extends OpMode {
 
             if (currentArmPos <= maxPos) {
                 if (currentArmPos >= zeroArmPos + 600)
-                    armPower = 0.2;
+                    armPower = 0.14;//0.2
                 else if (armSlider.getCurrentPosition() > zeroArmSliderPos + 200)
-                    armPower = 0.35;
+                    armPower = 0.27;//0.35
                 else
                     armPower = 0.2;
             }
@@ -583,8 +584,8 @@ public class TeleOp2 extends OpMode {
         double strafe = gamepad2.left_stick_x;
         double turn = -gamepad2.right_stick_x;
 
-        //max power over here is 0.95
-        double drivePower = 0.95 - (0.6 * gamepad2.right_trigger);
+        //max power over here is 1.0
+        double drivePower = 1.0 - (0.63 * gamepad2.right_trigger);
 
         if (gamepad2.a && AClicked) {
             if (gamepadRateLimit.hasExpired() && gamepad2.a) {
