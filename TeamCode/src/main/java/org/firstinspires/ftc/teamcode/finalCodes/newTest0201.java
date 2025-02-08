@@ -31,41 +31,27 @@ import java.util.Arrays;
 @Autonomous (name = "4SpecTest3Dead")
 public class newTest0201 extends LinearOpMode {
 
-
     @Override
     public void runOpMode() {
         Pose2d beginPose = new Pose2d(14.4, -61.5, Math.toRadians(180));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-//        VelConstraint baseVelConstraint = (robotPose, _path, _disp) -> {
-//            if (robotPose.position.x.value() > 24.0) {
-//                return 20.0;
-//            } else {
-//                return 50.0;
-//            }
-//        }
-
-        DcMotorEx clawSlider;
-        ServoImplEx claw;
-
-        claw = hardwareMap.get(ServoImplEx.class, "claw");
-        clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
+        ServoImplEx claw = hardwareMap.get(ServoImplEx.class, "claw");
+        DcMotorEx clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
         clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //first too low
-        //
+        //Init Code
         Actions.runBlocking(
                 new ClawAction(claw, 0.7)
         );
 
         Action moveToSub1 = drive.actionBuilder(beginPose)
-                .strafeToConstantHeading(new Vector2d(15,-31.5),new TranslationalVelConstraint(80))
+                .strafeToConstantHeading(new Vector2d(15,-31.5))
                 .build();
 
         Action moveToBlockAndPush = drive.actionBuilder(new Pose2d(15,-31.5,Math.toRadians(180)))
                 .strafeToConstantHeading(new Vector2d(15,-34))
-
                 .splineTo(new Vector2d(35, -24), Math.toRadians(90))//35
                 .splineTo(new Vector2d(35, -10), Math.toRadians(90))
                 //push block
@@ -74,12 +60,9 @@ public class newTest0201 extends LinearOpMode {
                 .build();
 
         Action pushBlock2 = drive.actionBuilder(new Pose2d(48.2,-51,Math.toRadians(360)))
-
                 .strafeTo(new Vector2d(48.2, -8))
-
                 .strafeTo(new Vector2d(59,-8))
                 .strafeTo(new Vector2d(59,-57))
-
                 .build();
 
         Action moveToPickup1 = drive.actionBuilder(new Pose2d(59,-57,Math.toRadians(360)))
@@ -94,31 +77,25 @@ public class newTest0201 extends LinearOpMode {
         Action moveToPickup2 = drive.actionBuilder(new Pose2d(12, -31.5, Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(28, -55),Math.toRadians(360))
                 .strafeTo(new Vector2d(27.99,-61.3))
-
                 .build();
 
         Action moveToSub3 = drive.actionBuilder(new Pose2d(27.99, -61.3, Math.toRadians(360)))
                 .strafeToLinearHeading(new Vector2d(8, -31.5),Math.toRadians(180))
                 .build();//6
 
-
         Action moveToPickup3 = drive.actionBuilder(new Pose2d(8,-31.5,Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(27.99, -55),Math.toRadians(360))
                 .strafeTo(new Vector2d(27.99,-61.3))
-
                 .build();
 
         Action moveToSub4 = drive.actionBuilder(new Pose2d(27.99, -61.3, Math.toRadians(360)))
                 .strafeToLinearHeading(new Vector2d(4, -31.5), Math.toRadians(180))
                 .build(); //3
 
-
         Action park = drive.actionBuilder(new Pose2d(4, -31.5, Math.toRadians(180)))
                 .strafeTo(new Vector2d(2,-40))
                 .strafeToLinearHeading(new Vector2d(47,-54),Math.toRadians(90), new TranslationalVelConstraint(100))
                 .build();
-
-
 
 // 2100-300-1375+1675-300-1375+1675-300-1375+1675-300-1820
 //
@@ -127,100 +104,81 @@ public class newTest0201 extends LinearOpMode {
 //                .build();
 
         Action wait05Seconds = drive.actionBuilder((new Pose2d(-3,-34,Math.toRadians(90))))
-                        .waitSeconds(0.05)
-                                .build();
-
-
-
+                .waitSeconds(0.05)
+                .build();
 
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
-
-                        new ParallelAction(
-                                moveToSub1,
-                                new ClawSliderAction(clawSlider,-2100,1)
-                        ),
-
-                        new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
-                                wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
-                        ),
-
-                        new ParallelAction(
-                                moveToBlockAndPush,
-                                new ClawSliderAction(clawSlider,1375,0.8)
-                        ),
-//
-                        new SequentialAction(
-                                pushBlock2,
-                                moveToPickup1,
-                                new PatientClawAction(claw,0.7),
-                                wait05Seconds
-                        ),
+                new ParallelAction(
+                        moveToSub1,
+                        new ClawSliderAction(clawSlider,-2100,1)
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 300, 0.8),
+                        wait05Seconds,
+                        new PatientClawAction(claw, 0.4)
+                ),
+                new ParallelAction(
+                        moveToBlockAndPush,
+                        new ClawSliderAction(clawSlider,1375,0.8)
+                ),
+                new SequentialAction(
+                        pushBlock2,
+                        moveToPickup1,
+                        new PatientClawAction(claw,0.7),
+                        wait05Seconds
+                ),
 ////425
-                        new ParallelAction(
-                                moveToSub2,
-                                new ClawSliderAction(clawSlider,-1675,0.9)
-                        ),
-                        new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
-                                wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
-                        ),
-                        //Third spec
-                        new ParallelAction(
-                                moveToPickup2,
-                                new ClawSliderAction(clawSlider, 1375, 0.8)
-                        ),
-                        new SequentialAction(
-                                new PatientClawAction(claw,0.7)
-//
-                        ),
-                        new ParallelAction(
-                                moveToSub3,
-                                new ClawSliderAction(clawSlider, -1675, 0.9)
-
-                        ),
-                        new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
-                                wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
-
-                        ),
-                        //Fourth spec
-                        new ParallelAction(
-                                moveToPickup3,
-                                new ClawSliderAction(clawSlider, 1375, 0.8)
-                        ),
-                        new SequentialAction(
-                                new PatientClawAction(claw,0.7),
-                                wait05Seconds
-
-                        ),
-                        new ParallelAction(
-                                moveToSub4,
-                                new ClawSliderAction(clawSlider, -1685, 0.9)
-//
-                        ),
-                        new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300 , 0.8),
-                                new PatientClawAction(claw, 0.4)
-
-                        ),
-
-                        new ParallelAction(
-                                park,
-                                new ClawSliderAction(clawSlider,1800,1)
-                        )
-//
-
-
+                new ParallelAction(
+                        moveToSub2,
+                        new ClawSliderAction(clawSlider,-1675,0.9)
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 300, 0.8),
+                        wait05Seconds,
+                        new PatientClawAction(claw, 0.4)
+                ),
+                //Third spec
+                new ParallelAction(
+                        moveToPickup2,
+                        new ClawSliderAction(clawSlider, 1375, 0.8)
+                ),
+                new SequentialAction(
+                        new PatientClawAction(claw,0.7)
+                ),
+                new ParallelAction(
+                        moveToSub3,
+                        new ClawSliderAction(clawSlider, -1675, 0.9)
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 300, 0.8),
+                        wait05Seconds,
+                        new PatientClawAction(claw, 0.4)
+                ),
+                //Fourth spec
+                new ParallelAction(
+                        moveToPickup3,
+                        new ClawSliderAction(clawSlider, 1375, 0.8)
+                ),
+                new SequentialAction(
+                        new PatientClawAction(claw,0.7),
+                        wait05Seconds
+                ),
+                new ParallelAction(
+                        moveToSub4,
+                        new ClawSliderAction(clawSlider, -1685, 0.9)
+                ),
+                new SequentialAction(
+                        new ClawSliderAction(clawSlider, 300 , 0.8),
+                        new PatientClawAction(claw, 0.4)
+                ),
+                new ParallelAction(
+                        park,
+                        new ClawSliderAction(clawSlider,1800,1)
                 )
+            )
         );
-
-
     }
 
     public class ArmAction implements Action {

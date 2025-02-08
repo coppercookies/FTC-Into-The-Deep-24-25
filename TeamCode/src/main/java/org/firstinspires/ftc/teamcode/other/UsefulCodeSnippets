@@ -1,0 +1,10 @@
+
+////// Changes robot speed based on robot position in Autonomous. VelConstraint
+        VelConstraint baseVelConstraint = (robotPose, _path, _disp) -> {
+            if (robotPose.position.x.value() > 24.0) {
+                return 20.0;
+            } else {
+                return 50.0;
+            }
+        }
+
