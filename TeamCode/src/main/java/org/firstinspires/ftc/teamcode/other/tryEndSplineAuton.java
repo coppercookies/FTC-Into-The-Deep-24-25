@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.finalCodes;
+package org.firstinspires.ftc.teamcode.other;
 
 import androidx.annotation.NonNull;
 
@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
-@Autonomous (name = "4SpecTest3Dead")
-public class newTest0201 extends LinearOpMode {
+@Autonomous (name = "EndSplineTest")
+public class tryEndSplineAuton extends LinearOpMode {
 
 
     @Override
@@ -82,12 +82,8 @@ public class newTest0201 extends LinearOpMode {
 
                 .build();
 
-        Action moveToPickup1 = drive.actionBuilder(new Pose2d(59,-57,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(27.99, -52))
-                .strafeToConstantHeading(new Vector2d(27.99,-61.3))
-                .build();
 
-        Action moveToSub2 = drive.actionBuilder(new Pose2d(27.99,-61.3,Math.toRadians(360)))
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(59,-57,Math.toRadians(360)))
                 .strafeToLinearHeading(new Vector2d(12, -31.5),Math.toRadians(180))
                 .build(); //9
 
@@ -114,8 +110,11 @@ public class newTest0201 extends LinearOpMode {
 
 
         Action park = drive.actionBuilder(new Pose2d(4, -31.5, Math.toRadians(180)))
-                .strafeTo(new Vector2d(2,-40))
-                .strafeToLinearHeading(new Vector2d(47,-54),Math.toRadians(90), new TranslationalVelConstraint(100))
+                .strafeTo(new Vector2d(9,-35))
+
+                .splineToConstantHeading(new Vector2d(40, -28), Math.toRadians(90.00))
+                .splineToConstantHeading(new Vector2d(60, -10), Math.toRadians(0.00))
+                .strafeTo(new Vector2d(60,-51))
                 .build();
 
 
@@ -126,9 +125,9 @@ public class newTest0201 extends LinearOpMode {
 //                .strafeToLinearHeading(new Vector2d(3,-35),Math.toRadians(90))
 //                .build();
 
-        Action wait05Seconds = drive.actionBuilder((new Pose2d(-3,-34,Math.toRadians(90))))
-                        .waitSeconds(0.05)
-                                .build();
+        Action wait05Seconds = drive.actionBuilder((new Pose2d(-60,-51,Math.toRadians(90))))
+                .waitSeconds(0.05)
+                .build();
 
 
 
@@ -145,7 +144,7 @@ public class newTest0201 extends LinearOpMode {
                         new SequentialAction(
                                 new ClawSliderAction(clawSlider, 300, 0.8),
                                 wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
+                                new PatientClawAction(claw, 0.0)
                         ),
 
                         new ParallelAction(
@@ -155,7 +154,6 @@ public class newTest0201 extends LinearOpMode {
 //
                         new SequentialAction(
                                 pushBlock2,
-                                moveToPickup1,
                                 new PatientClawAction(claw,0.7),
                                 wait05Seconds
                         ),
@@ -167,7 +165,7 @@ public class newTest0201 extends LinearOpMode {
                         new SequentialAction(
                                 new ClawSliderAction(clawSlider, 300, 0.8),
                                 wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
+                                new PatientClawAction(claw, 0.0)
                         ),
                         //Third spec
                         new ParallelAction(
@@ -186,7 +184,7 @@ public class newTest0201 extends LinearOpMode {
                         new SequentialAction(
                                 new ClawSliderAction(clawSlider, 300, 0.8),
                                 wait05Seconds,
-                                new PatientClawAction(claw, 0.4)
+                                new PatientClawAction(claw, 0.0)
 
                         ),
                         //Fourth spec
@@ -206,7 +204,7 @@ public class newTest0201 extends LinearOpMode {
                         ),
                         new SequentialAction(
                                 new ClawSliderAction(clawSlider, 300 , 0.8),
-                                new PatientClawAction(claw, 0.4)
+                                new PatientClawAction(claw, 0.0)
 
                         ),
 

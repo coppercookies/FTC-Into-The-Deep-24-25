@@ -1,6 +1,10 @@
 //24-25 Copper Cookies TeleOp
 package org.firstinspires.ftc.teamcode.finalCodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -72,12 +76,11 @@ public class TeleOp2 extends OpMode {
     DigitalChannel digitalTouch;
     LED max_LED_red;
     LED max_LED_green;
-
+    Servo LED_Headlight;
 
 
     IMU imu;
     Deadline gamepadRateLimit = new Deadline(250, TimeUnit.MILLISECONDS);
-
 
     @Override
     public void init() {
@@ -152,6 +155,7 @@ public class TeleOp2 extends OpMode {
 
         max_LED_green = hardwareMap.get(LED.class, "max_LED_green");
         max_LED_red = hardwareMap.get(LED.class, "max_LED_red");
+        LED_Headlight = hardwareMap.get(Servo.class, "LED_Headlight");
 
 
     }
@@ -163,6 +167,7 @@ public class TeleOp2 extends OpMode {
 
     @Override
     public void loop() {
+
         FCDDrive();
         ClawSlider();
         ArmClaw();
@@ -171,12 +176,20 @@ public class TeleOp2 extends OpMode {
 //        Intake();
         Arm();
         ArmSlider();
-        Claw();
+        Claw(); 
+        Headlight();
 //        PivotServo();
         ZeroPos();
         PivotClaw();
     }
 
+    private void Headlight() {
+        if (gamepad2.y)
+            LED_Headlight.setPosition(1);
+        else if (gamepad2.a)
+            LED_Headlight.setPosition(0);
+
+    }
     private void ZeroPos() {
         if (gamepad2.y && YClicked) {
             zeroArmSliderPos = armSlider.getCurrentPosition();
@@ -475,9 +488,9 @@ public class TeleOp2 extends OpMode {
         //   claw.setPosition(0.3); // close claw
         //} else
         if (gamepad1.left_bumper) {
-            claw.setPosition(0); // Open claw
+            claw.setPosition(0.4); //0// Open claw
         } else {
-            claw.setPosition(0.7); // close claw
+            claw.setPosition(0.7);//0.7 // close claw //0.6
         }
     }
 
