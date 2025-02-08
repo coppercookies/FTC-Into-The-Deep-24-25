@@ -321,11 +321,9 @@ public class TeleOp2 extends OpMode {
         } else if (gamepad1.b) {
             armClaw.setPosition(0.67);
         }
-
     }
 
     private void Claw() {
-
         if (!clawEnabled)
             return;
         //double ClawPower = 0.0;
@@ -354,7 +352,6 @@ public class TeleOp2 extends OpMode {
                 AClicked = false;
 //                max_LED_red.off();
 //                max_LED_green.on();
-
             }
             telemetry.addData("AClicked", AClicked);
         }
