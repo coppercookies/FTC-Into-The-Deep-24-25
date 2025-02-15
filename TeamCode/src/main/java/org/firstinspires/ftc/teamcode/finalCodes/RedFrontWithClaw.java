@@ -12,8 +12,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -32,74 +30,92 @@ public class RedFrontWithClaw extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         DcMotorEx arm;
+        DcMotorEx clawSlider;
         DcMotorEx armSlider;
-        CRServoImplEx RServo;
-        CRServoImplEx LServo;
-        ServoImplEx pivotServo;
+
+        ServoImplEx claw;
         Servo armClaw;
         arm = hardwareMap.get(DcMotorEx.class, "arm");
         armSlider = hardwareMap.get(DcMotorEx.class, "armSlider");
         armClaw = hardwareMap.get(Servo.class, "armClaw");
 
+        clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
+        clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        claw = hardwareMap.get(ServoImplEx.class, "claw");
 
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int zeroArmSliderPos = armSlider.getCurrentPosition();
 
 
-        Action test = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(-39,-61.5))
-                .build();
         Action wait1Second = drive.actionBuilder(beginPose)
                 .waitSeconds(1)
                 .build();
-        Action wait05Second = drive.actionBuilder(beginPose)
-                .waitSeconds(0.5)
+
+        Action wait15Second = drive.actionBuilder(beginPose)
+                .waitSeconds(1.5)
                 .build();
 
         Action moveToBasket = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(228))
+                .strafeTo(new Vector2d(-38,-49))
+                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(225))
                 .build();
-        Action moveForwardBasket = drive.actionBuilder(new Pose2d(-52.5,-52.5,Math.toRadians(228)))
-                .strafeTo(new Vector2d(-53.5,-53.5))
+        Action moveForwardBasket = drive.actionBuilder(new Pose2d(-52.5,-52.5,Math.toRadians(225)))
+                .strafeTo(new Vector2d(-55,-55))
                 .build();
-        Action moveBackBasket = drive.actionBuilder(new Pose2d(-53.5,-53.5,Math.toRadians(228)))
+        Action moveBackBasket = drive.actionBuilder(new Pose2d(-55,-55,Math.toRadians(225)))
+                .waitSeconds(0.4)
+                .strafeTo(new Vector2d(-48,-48))
+                .build();
+
+
+        Action turnToBlock1 = drive.actionBuilder(new Pose2d(-48, -48, Math.toRadians(225)))
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(new Vector2d(-45.5, -40.3), Math.toRadians(92))
+                .build();
+
+
+        Action moveToBasket2 = drive.actionBuilder(new Pose2d(-45.5,-40.3,Math.toRadians(92)))
+                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(225))
+                .build();
+
+        Action moveForwardBasket2 = drive.actionBuilder(new Pose2d(-52.5,-52.5,Math.toRadians(225)))
+                .strafeTo(new Vector2d(-55,-55))
+                .build();
+        Action moveBackBasket2 = drive.actionBuilder(new Pose2d(-55,-55,Math.toRadians(225)))
+                .waitSeconds(0.2)
                 .strafeTo(new Vector2d(-50,-50))
                 .build();
 
-
-        Action turnToBlock1 = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(228)))
-                .strafeToLinearHeading(new Vector2d(-42.5, -38), Math.toRadians(90),new TranslationalVelConstraint(60))
-                .build();
-//        Action pickBlock1 = drive.actionBuilder(new Pose2d(-42.5, -43, Math.toRadians(90)))
-//                .waitSeconds(1)
-//                .strafeToConstantHeading(new Vector2d(-45, -35), new TranslationalVelConstraint(6))
-//                .build();
-
-        Action moveToBasket2 = drive.actionBuilder(new Pose2d(-45,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(228))
+        Action turnToBlock2 = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(225)))
+                .strafeToLinearHeading(new Vector2d(-55.6, -43), Math.toRadians(90))
                 .build();
 
-        Action turnToBlock2 = drive.actionBuilder(new Pose2d(-52.5, -52.5, Math.toRadians(228)))
-                .strafeToLinearHeading(new Vector2d(-57, -43), Math.toRadians(90))
-                .build();
-        Action pickBlock2 = drive.actionBuilder(new Pose2d(-57, -43, Math.toRadians(90)))
-                .waitSeconds(1)
-                .strafeToConstantHeading(new Vector2d(-57, -35), new TranslationalVelConstraint(6))
-                .build();
-        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-57,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(45))
-                .build();
-        Action faceForward = drive.actionBuilder(new Pose2d(-52,-52,Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-40,-20),Math.toRadians(90))
+
+        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-55.6,-43,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(225))
                 .build();
 
+        Action moveForwardBasket3 = drive.actionBuilder(new Pose2d(-52.5,-52.5,Math.toRadians(225)))
+                .strafeTo(new Vector2d(-55,-55))
+                .build();
+        Action moveBackBasket3 = drive.actionBuilder(new Pose2d(-55,-55,Math.toRadians(225)))
+                .waitSeconds(0.2)
+                .strafeTo(new Vector2d(-50,-50))
+                .build();
+
+        Action park = drive.actionBuilder(new Pose2d(-50,-50,Math.toRadians(225)))
+                .strafeToLinearHeading(new Vector2d(-30,-9),Math.toRadians(90), new TranslationalVelConstraint(120))
+                .strafeToLinearHeading(new Vector2d(-16,-9),Math.toRadians(90), new TranslationalVelConstraint(90))
+
+                .build();
 
         Actions.runBlocking(
                 new SequentialAction(
                     new ArmAction(arm, armSlider, 75,0.2),
                     wait1Second,
-                    new ArmClawAction(armClaw,0.67)
+                    new ArmClawAction(armClaw,0.73)
 
                 )
         );
@@ -110,24 +126,95 @@ public class RedFrontWithClaw extends LinearOpMode {
 
                         new ParallelAction(
                                 moveToBasket,
-                                new ArmAction(arm,armSlider, 1080, 1)
+                                new ArmAction(arm,armSlider, 940, 1)
 
                         ),
                         new SequentialAction(
-                               new ArmSliderAction(armSlider,2000,1),
+                               new ArmSliderAction(armSlider,2300,1),
                                moveForwardBasket,
                                new ArmAction(arm, armSlider,-100,1),
-                               new ArmClawAction(armClaw,0),
-                               new ArmAction(arm, armSlider,120,1),
                                wait1Second,
+                               new ArmClawAction(armClaw,0),
+                               new ArmAction(arm, armSlider,140,1),
                                moveBackBasket,
 
-                               new ArmSliderAction(armSlider, -1990,1),
-                               wait1Second,
-                               new ArmAction(arm, armSlider, -1100,0.4),
-                                wait1Second,
-                                turnToBlock1
-                        )
+                               new ArmSliderAction(armSlider, -2200,1),
+                               wait1Second
+
+                        ),
+                        new SequentialAction(
+                            new ArmAction(arm, armSlider, -975,0.05),
+                            turnToBlock1,
+                            wait1Second,
+                            new ArmSliderAction(armSlider,750,1),
+                            new ArmClawAction(armClaw,0.73),
+                            new ArmSliderAction(armSlider,-650,1)
+                        ),
+                        new ParallelAction(
+                            moveToBasket2,
+                            new ArmAction(arm, armSlider,935,1)
+
+                        ),
+                        //go to basket with 2nd block
+                        new SequentialAction(
+                            new ArmSliderAction(armSlider,2450,1),
+
+                            moveForwardBasket2,
+                            wait1Second,
+                            new ArmAction(arm, armSlider,-100,1),
+                            wait1Second,
+                            new ArmClawAction(armClaw,0),
+                            new ArmAction(arm, armSlider,140,1),
+                            moveBackBasket2,
+
+                            new ArmSliderAction(armSlider, -2505,1)
+                        ),
+
+
+                new SequentialAction(
+
+                        new ArmAction(arm, armSlider, -955,0.05),
+                        turnToBlock2,
+                        wait1Second,
+                        new ArmSliderAction( armSlider, 985, 1),//875
+                        wait1Second,
+                        new ArmClawAction(armClaw,0.73),
+                        new ArmSliderAction(armSlider,-815,1)
+                ),
+                new ParallelAction(
+                 moveToBasket3,
+                 new ArmAction(arm, armSlider,902,1)
+
+                 ),
+                new SequentialAction(
+                        new ArmSliderAction(armSlider,2175,1),
+
+                        moveForwardBasket3,
+                        new ArmAction(arm, armSlider,-120,1),
+                        new ArmClawAction(armClaw,0),
+                        new ArmAction(arm, armSlider,160,1),
+                        moveBackBasket3
+    //                    new ArmSliderAction(armSlider, -2400,1),
+    //                    wait1Second,
+    //                    new ArmAction (arm, armSlider, -1050, 0.3),
+    //                    park
+                ),
+                new ParallelAction(
+                        new SequentialAction(
+                                new ArmSliderAction(armSlider,-2400,1),
+                                new ArmAction (arm, armSlider, -1050, 0.3)
+                        ),
+                        new ClawSliderAction(clawSlider, -1700,1),
+                        new ClawAction(claw,0.73),
+                        park
+
+                )
+//                new SequentialAction(
+//                        new ClawSliderAction(clawSlider, 200,1)
+//                )
+
+
+
 
 //                new ParallelAction(
 //                    new ArmAction(arm,armSlider, 2080, 1),
@@ -154,6 +241,9 @@ public class RedFrontWithClaw extends LinearOpMode {
 
                 )
         );
+
+
+
     }
 
     public class ArmAction implements Action {
@@ -258,6 +348,54 @@ public class RedFrontWithClaw extends LinearOpMode {
         }
     }
 
+    public class ClawSliderAction implements Action {
+        DcMotor clawSlider;
+        double clawSliderPower;
+        int clawSliderPos;
+        boolean initialized;
+        int startClawSliderPos;
+        int clawSlideEndPos;
+        boolean goingUp;
+        public ClawSliderAction(DcMotor clawSlider, int clawSliderPos, double clawSliderPower) {
+            this.clawSlider = clawSlider;
+            this.clawSliderPower = clawSliderPower;
+            this.clawSliderPos = clawSliderPos;
+            this.initialized = false;
+            this.startClawSliderPos = 0;
+            this.clawSlideEndPos = 0;
+            if (clawSliderPos > 0)
+                this.goingUp = false;
+            else
+                this.goingUp = true;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if(!initialized) {
+                startClawSliderPos = clawSlider.getCurrentPosition(); // -1200, 0
+                clawSlideEndPos = clawSliderPos + startClawSliderPos; // 200 => -1000, -1200 => -1200
+                clawSlider.setTargetPosition(clawSlideEndPos);
+                clawSlider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                clawSlider.setPower(clawSliderPower);
+                initialized = true;
+            }
+
+            if (goingUp) {
+                if (clawSlider.getCurrentPosition() >= clawSlideEndPos) {
+                    return true;
+                }
+            }
+            else {
+                if (clawSlider.getCurrentPosition() <= clawSlideEndPos) {
+                    return true;
+                }
+            }
+
+            //Negative goes up
+            clawSlider.setPower(-0.15);
+            return false;
+        }
+    }
 
     public class ArmClawAction implements Action {
         Servo armClaw;
@@ -276,11 +414,26 @@ public class RedFrontWithClaw extends LinearOpMode {
                 armClaw.setPosition(armClawPos);
             }
 
-            if (timer.seconds() < 0.4) {
+            if (timer.seconds() < 1) {
                 return true;
             } else {
                 return false;
             }
+        }
+    }
+    public class ClawAction implements Action {
+        ServoImplEx claw;
+        double clawPos;
+
+        public ClawAction(ServoImplEx claw, double clawPos) {
+            this.claw = claw;
+            this.clawPos = clawPos;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            claw.setPosition(clawPos);
+            return false;
         }
     }
 

@@ -72,9 +72,6 @@ public class TeleOp2 extends OpMode {
         pivotClaw = hardwareMap.get(CRServo.class, "pivotClaw");
         armClaw = hardwareMap.get(ServoImplEx.class, "armClaw");
 
-//        RServo = hardwareMap.get(CRServo.class, "RServo");
-//        LServo = hardwareMap.get(CRServo.class, "LServo");
-//        pivotServo = hardwareMap.get(Servo.class, "pivotServo");
         // Init IMU-- ------------------------------------------------------
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -113,7 +110,7 @@ public class TeleOp2 extends OpMode {
         armSlider = hardwareMap.get(DcMotor.class, "armSlider");
         //armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         zeroArmSliderPos = armSlider.getCurrentPosition();
-        maxArmSliderPos = zeroArmSliderPos + 2525;//2000
+        maxArmSliderPos = zeroArmSliderPos + 2700;//2525
         telemetry.addData("CurrentArmSliderPos", armSlider.getCurrentPosition());
 
         //Sensors + LED
@@ -135,7 +132,7 @@ public class TeleOp2 extends OpMode {
         PivotClaw();
         Arm();
         ArmSlider();
-        Claw(); 
+        Claw();
         Headlight();
         ZeroPos();
         PivotClaw();
@@ -143,13 +140,13 @@ public class TeleOp2 extends OpMode {
 
     private void Headlight() {
         if (gamepad2.y)
-            LED_Headlight.setPosition(1);
+            LED_Headlight.setPosition(0.3);
         else if (gamepad2.a)
             LED_Headlight.setPosition(0);
     }
     private void ZeroPos() {
         if (gamepad2.y && YClicked) {
-            zeroArmSliderPos = armSlider.getCurrentPosition();
+//            zeroArmSliderPos = armSlider.getCurrentPosition();
             zeroClawSliderPos = clawSlider.getCurrentPosition() - zeroClawSliderPosCorrection;
             maxClawSliderPos = zeroClawSliderPos - 1500;
          //   zeroClawSliderPos = clawSlider.getCurrentPosition() + zeroClawSliderPosCorrection;
@@ -199,7 +196,7 @@ public class TeleOp2 extends OpMode {
 //            }
         }
         else {
-            clawSliderPower = -0.1;
+            clawSliderPower = -0.09;
         }
 
         clawSlider.setPower(clawSliderPower);
@@ -214,21 +211,22 @@ public class TeleOp2 extends OpMode {
         double armSliderPower = 0.0;
         telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
         if (gamepad1.a) {
-            if (armSlider.getCurrentPosition() > zeroArmSliderPos) {
+            //if (armSlider.getCurrentPosition() > zeroArmSliderPos) {
                 armSliderPower = -1.0;
-            }
+            //}
         } else if (gamepad1.y) {
             //telemetry.addData("a", true);
             //telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
             armSliderPower = 1.0;
             if (armSlider.getCurrentPosition() >= maxArmSliderPos) {
                 armSliderPower = 0;
+                LED_Headlight.setPosition(0.6);
             }
         }
         if (arm.getCurrentPosition() > 700) {
             maxArmSliderPos = zeroArmSliderPos + 2525;
         } else {
-            maxArmSliderPos = zeroArmSliderPos + 2820;
+            maxArmSliderPos = zeroArmSliderPos + 2000;//2820
         }
 //        double servoPosition = Math.max(0, Math.min(armSlider.getCurrentPosition() / 5000, 1));
 //        pivotServo.setPosition(servoPosition);
@@ -319,7 +317,7 @@ public class TeleOp2 extends OpMode {
         if (gamepad1.x) {
             armClaw.setPosition(0.4);
         } else if (gamepad1.b) {
-            armClaw.setPosition(0.67);
+            armClaw.setPosition(0.695);
         }
     }
 

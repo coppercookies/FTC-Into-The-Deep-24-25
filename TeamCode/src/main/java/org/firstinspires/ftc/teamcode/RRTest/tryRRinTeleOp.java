@@ -37,12 +37,12 @@ public class tryRRinTeleOp extends OpMode {
 
         double vertical = -gamepad2.left_stick_y;
         double strafe = -gamepad2.left_stick_x;
+//
+//        double adjustedVertical = vertical * Math.sin(heading) + strafe * Math.cos(heading);
+//        double adjustedStrafe = vertical * Math.cos(heading) - strafe * Math.sin(heading);
 
-        double adjustedVertical = vertical * Math.sin(heading) + strafe * Math.cos(heading);
-        double adjustedStrafe = vertical * Math.cos(heading) - strafe * Math.sin(heading);
-
-//        double adjustedVertical = vertical * Math.cos(heading) - strafe * Math.sin(heading);
-//        double adjustedStrafe = vertical * Math.sin(heading) + strafe * Math.cos(heading);
+        double adjustedVertical = vertical * Math.cos(heading) - strafe * Math.sin(heading);
+        double adjustedStrafe = vertical * Math.sin(heading) + strafe * Math.cos(heading);
         Vector2d positionInput = new Vector2d(adjustedStrafe, adjustedVertical);
 
         drive.setDrivePowers(new PoseVelocity2d(
