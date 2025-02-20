@@ -149,7 +149,7 @@ public class TeleOp2 extends OpMode {
 //            zeroArmSliderPos = armSlider.getCurrentPosition();
             zeroClawSliderPos = clawSlider.getCurrentPosition() - zeroClawSliderPosCorrection;
             maxClawSliderPos = zeroClawSliderPos - 1500;
-         //   zeroClawSliderPos = clawSlider.getCurrentPosition() + zeroClawSliderPosCorrection;
+            //   zeroClawSliderPos = clawSlider.getCurrentPosition() + zeroClawSliderPosCorrection;
             YClicked = false;
         }
         telemetry.addData("YClicked", YClicked);
@@ -212,7 +212,7 @@ public class TeleOp2 extends OpMode {
         telemetry.addData("Current armSliderPos", armSlider.getCurrentPosition());
         if (gamepad1.a) {
             //if (armSlider.getCurrentPosition() > zeroArmSliderPos) {
-                armSliderPower = -1.0;
+            armSliderPower = -1.0;
             //}
         } else if (gamepad1.y) {
             //telemetry.addData("a", true);

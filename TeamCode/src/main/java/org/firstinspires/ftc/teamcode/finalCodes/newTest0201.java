@@ -53,14 +53,14 @@ public class newTest0201 extends LinearOpMode {
         Action moveToBlockAndPush = drive.actionBuilder(new Pose2d(15,-31.5,Math.toRadians(180)))
                 .strafeToConstantHeading(new Vector2d(15,-34))
                 .splineTo(new Vector2d(33, -24), Math.toRadians(90))//35
-                .splineTo(new Vector2d(33, -10), Math.toRadians(90))
+                .splineTo(new Vector2d(33, -14), Math.toRadians(90))
                 //push block
-                .splineToConstantHeading(new Vector2d(48.2, -10), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(48.2, -51), Math.toRadians(90), new TranslationalVelConstraint(70))
+                .splineToConstantHeading(new Vector2d(45, -14), Math.toRadians(270))//48.2\------------------------------------------x
+                .splineToConstantHeading(new Vector2d(45, -51), Math.toRadians(90), new TranslationalVelConstraint(70))
                 .build();
 
-        Action pushBlock2 = drive.actionBuilder(new Pose2d(48.2,-51,Math.toRadians(358)))
-                .strafeTo(new Vector2d(48.2, -8))
+        Action pushBlock2 = drive.actionBuilder(new Pose2d(45,-51,Math.toRadians(358)))
+                .strafeTo(new Vector2d(45, -8))
                 .strafeTo(new Vector2d(59,-8))
                 .strafeTo(new Vector2d(59,-57), new TranslationalVelConstraint(85))
                 .build();
@@ -81,10 +81,10 @@ public class newTest0201 extends LinearOpMode {
                 .build();
 
         Action moveToSub3 = drive.actionBuilder(new Pose2d(31, -62, Math.toRadians(358)))
-                .strafeToLinearHeading(new Vector2d(8, -32),Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(4, -32),Math.toRadians(180))
                 .build();//6
 
-        Action moveToPickup3 = drive.actionBuilder(new Pose2d(8,-32,Math.toRadians(180)))
+        Action moveToPickup3 = drive.actionBuilder(new Pose2d(4,-32,Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(28.6, -55),Math.toRadians(358))
                 .strafeTo(new Vector2d(31,-62))
                 .build();

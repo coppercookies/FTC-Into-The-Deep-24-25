@@ -146,9 +146,9 @@ public class RedFrontWithClaw extends LinearOpMode {
                             new ArmAction(arm, armSlider, -975,0.05),
                             turnToBlock1,
                             wait1Second,
-                            new ArmSliderAction(armSlider,750,1),
+                            new ArmSliderAction(armSlider,720,1),
                             new ArmClawAction(armClaw,0.73),
-                            new ArmSliderAction(armSlider,-650,1)
+                            new ArmSliderAction(armSlider,-620,1)
                         ),
                         new ParallelAction(
                             moveToBasket2,
@@ -176,10 +176,10 @@ public class RedFrontWithClaw extends LinearOpMode {
                         new ArmAction(arm, armSlider, -955,0.05),
                         turnToBlock2,
                         wait1Second,
-                        new ArmSliderAction( armSlider, 985, 1),//875
+                        new ArmSliderAction( armSlider, 955, 1),//875
                         wait1Second,
                         new ArmClawAction(armClaw,0.73),
-                        new ArmSliderAction(armSlider,-815,1)
+                        new ArmSliderAction(armSlider,-785,1)
                 ),
                 new ParallelAction(
                  moveToBasket3,
