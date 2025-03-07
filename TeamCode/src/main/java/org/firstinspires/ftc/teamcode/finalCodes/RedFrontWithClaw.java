@@ -89,11 +89,11 @@ public class RedFrontWithClaw extends LinearOpMode {
                 .build();
 
         Action turnToBlock2 = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(225)))
-                .strafeToLinearHeading(new Vector2d(-55.6, -43), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-54, -43), Math.toRadians(90))//-55.6
                 .build();
 
 
-        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-55.6,-43,Math.toRadians(90)))
+        Action moveToBasket3 = drive.actionBuilder(new Pose2d(-54,-43,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(225))
                 .build();
 
@@ -146,9 +146,9 @@ public class RedFrontWithClaw extends LinearOpMode {
                             new ArmAction(arm, armSlider, -975,0.05),
                             turnToBlock1,
                             wait1Second,
-                            new ArmSliderAction(armSlider,720,1),
+                            new ArmSliderAction(armSlider,690,1),
                             new ArmClawAction(armClaw,0.73),
-                            new ArmSliderAction(armSlider,-620,1)
+                            new ArmSliderAction(armSlider,-590,1)
                         ),
                         new ParallelAction(
                             moveToBasket2,
@@ -157,42 +157,44 @@ public class RedFrontWithClaw extends LinearOpMode {
                         ),
                         //go to basket with 2nd block
                         new SequentialAction(
-                            new ArmSliderAction(armSlider,2450,1),
+                            new ArmSliderAction(armSlider,2370,1),
 
                             moveForwardBasket2,
                             wait1Second,
-                            new ArmAction(arm, armSlider,-100,1),
-                            wait1Second,
+//                            new ArmAction(arm, armSlider,-100,1),
+//                            wait1Second,
                             new ArmClawAction(armClaw,0),
-                            new ArmAction(arm, armSlider,140,1),
+                            new ArmAction(arm, armSlider,40,1),
                             moveBackBasket2,
 
-                            new ArmSliderAction(armSlider, -2505,1)
+                            new ArmSliderAction(armSlider, -2425,1)
                         ),
 
 
                 new SequentialAction(
 
-                        new ArmAction(arm, armSlider, -955,0.05),
+                        new ArmAction(arm, armSlider, -938,0.05),
                         turnToBlock2,
                         wait1Second,
-                        new ArmSliderAction( armSlider, 955, 1),//875
+                        new ArmSliderAction( armSlider, 935, 1),//875
                         wait1Second,
                         new ArmClawAction(armClaw,0.73),
-                        new ArmSliderAction(armSlider,-785,1)
+                        new ArmSliderAction(armSlider,-765,1)
                 ),
                 new ParallelAction(
                  moveToBasket3,
-                 new ArmAction(arm, armSlider,902,1)
+                 new ArmAction(arm, armSlider,867,1)
 
                  ),
                 new SequentialAction(
                         new ArmSliderAction(armSlider,2175,1),
 
                         moveForwardBasket3,
-                        new ArmAction(arm, armSlider,-120,1),
+                        new ArmAction(arm, armSlider,-50,1),
+                        wait1Second,
                         new ArmClawAction(armClaw,0),
-                        new ArmAction(arm, armSlider,160,1),
+                        wait1Second,
+                        new ArmAction(arm, armSlider,90,1),
                         moveBackBasket3
     //                    new ArmSliderAction(armSlider, -2400,1),
     //                    wait1Second,
@@ -202,7 +204,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                 new ParallelAction(
                         new SequentialAction(
                                 new ArmSliderAction(armSlider,-2400,1),
-                                new ArmAction (arm, armSlider, -1050, 0.3)
+                                new ArmAction (arm, armSlider, -1020, 0.3)
                         ),
                         new ClawSliderAction(clawSlider, -1700,1),
                         new ClawAction(claw,0.73),

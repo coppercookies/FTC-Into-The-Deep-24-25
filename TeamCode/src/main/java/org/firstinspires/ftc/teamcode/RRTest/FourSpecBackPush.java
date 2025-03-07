@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.finalCodes;
+package org.firstinspires.ftc.teamcode.RRTest;
 
 import androidx.annotation.NonNull;
 
@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
-@Autonomous (name = "4SpecTest3Dead")
-public class newTest0201 extends LinearOpMode {
+@Autonomous (name = "abcdefghijklmnopqrstuvwxyz")
+public class FourSpecBackPush extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -51,51 +51,62 @@ public class newTest0201 extends LinearOpMode {
                 .build();
 
         Action moveToBlockAndPush = drive.actionBuilder(new Pose2d(15,-31.5,Math.toRadians(180)))
-                .strafeToConstantHeading(new Vector2d(15,-34))
-                .splineTo(new Vector2d(33, -24), Math.toRadians(90))//35
-                .splineTo(new Vector2d(33, -14), Math.toRadians(90))
-                //push block
-                .splineToConstantHeading(new Vector2d(45, -14), Math.toRadians(270))//48.2\------------------------------------------x
-                .splineToConstantHeading(new Vector2d(45, -51), Math.toRadians(90), new TranslationalVelConstraint(70))
+                .strafeToConstantHeading(new Vector2d(15,-33))
+
+                .splineToLinearHeading(new Pose2d(32,-49,Math.toRadians(130)),Math.toRadians(360))
+                .setTangent(Math.toRadians(360))
+                .splineToSplineHeading(new Pose2d(45,-12,Math.toRadians(90)),Math.toRadians(360), new TranslationalVelConstraint(35))
+//                .splineToConstantHeading(new Vector2d(47, -18), Math.toRadians(-90))
+                .waitSeconds(0.001)
+                .strafeTo(new Vector2d(45,-56), new TranslationalVelConstraint(90))
+//                .splineToLinearHeading(new Pose2d(28,-43,Math.toRadians(90)),Math.toRadians(360))
+//                .splineToLinearHeading(new Pose2d(43.5,-5,Math.toRadians(90)),Math.toRadians(360))
+//                .strafeToLinearHeading(new Vector2d(43.5,-52),Math.toRadians(90), new TranslationalVelConstraint(80))
                 .build();
 
-        Action pushBlock2 = drive.actionBuilder(new Pose2d(45,-51,Math.toRadians(360)))
-                .strafeTo(new Vector2d(45, -8))
-                .strafeTo(new Vector2d(59.5,-8))
-                .strafeTo(new Vector2d(59.5,-57), new TranslationalVelConstraint(85))
+        Action pushBlock2 = drive.actionBuilder(new Pose2d(45,-51,Math.toRadians(90)))
+                .strafeTo(new Vector2d(45,-12), new TranslationalVelConstraint(90))
+
+                .strafeTo(new Vector2d(57,-12))
+                .strafeTo(new Vector2d(57,-57), new TranslationalVelConstraint(90))
                 .build();
 
-        Action moveToPickup1 = drive.actionBuilder(new Pose2d(59.5,-57,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(31, -54), new TranslationalVelConstraint(85))
+
+
+        Action moveToPickup1 = drive.actionBuilder(new Pose2d(57,-57,Math.toRadians(90)))
+                .strafeTo(new Vector2d(57,-54))
+                .strafeToLinearHeading(new Vector2d(31, -54),Math.toRadians(360))
 //                .strafeToConstantHeading(new Vector2d(31, -54))
-                .strafeToConstantHeading(new Vector2d(31,-62.5))
+                .strafeToConstantHeading(new Vector2d(31,-61))
                 .build();
 
-        Action moveToSub2 = drive.actionBuilder(new Pose2d(31,-62.5,Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(12, -32),Math.toRadians(180))
-                .build(); //9
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(31,-61,Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(12, -33),Math.toRadians(180)) //y = -32
+                .build();
 
-        Action moveToPickup2 = drive.actionBuilder(new Pose2d(12, -32, Math.toRadians(180)))
+        Action moveToPickup2 = drive.actionBuilder(new Pose2d(12, -33, Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(31, -55),Math.toRadians(360))
-                .strafeTo(new Vector2d(31,-61.85))
+                .strafeTo(new Vector2d(31,-61))
                 .build();
 
-        Action moveToSub3 = drive.actionBuilder(new Pose2d(31, -61.85, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(2, -32.25),Math.toRadians(180))
+        Action moveToSub3 = drive.actionBuilder(new Pose2d(31, -61, Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(2, -33.4),Math.toRadians(180))
                 .build();//6
 
-        Action moveToPickup3 = drive.actionBuilder(new Pose2d(2,-32.25,Math.toRadians(180)))
+        Action moveToPickup3 = drive.actionBuilder(new Pose2d(2,-33.4,Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(28.6, -55),Math.toRadians(360))
-                .strafeTo(new Vector2d(31,-61.5))
+                .strafeTo(new Vector2d(31,-61))
                 .build();
 
-        Action moveToSub4 = drive.actionBuilder(new Pose2d(31, -61.5, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(-2, -32), Math.toRadians(180))
+        Action moveToSub4 = drive.actionBuilder(new Pose2d(31, -61, Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(-2, -33.4), Math.toRadians(180))
                 .build(); //3
 
-        Action park = drive.actionBuilder(new Pose2d(-2, -32, Math.toRadians(180)))
-                .strafeTo(new Vector2d(2,-40))
-                .strafeToLinearHeading(new Vector2d(45,-62),Math.toRadians(90), new TranslationalVelConstraint(120))
+        Action park = drive.actionBuilder(new Pose2d(-2, -33.4, Math.toRadians(180)))
+                .strafeTo(new Vector2d(-2,-35))
+                .splineToLinearHeading(new Pose2d(45,-60,Math.toRadians(-60)), Math.toRadians(90),
+                        new TranslationalVelConstraint(120))
+                //.strafeToLinearHeading(new Vector2d(45,-60),Math.toRadians(90), new TranslationalVelConstraint(120))
                 .build();
 
 // 2100-300-1375+1675-300-1375+1675-300-1375+1675-300-1820
