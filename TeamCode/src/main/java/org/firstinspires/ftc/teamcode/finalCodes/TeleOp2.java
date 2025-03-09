@@ -88,9 +88,9 @@ public class TeleOp2 extends OpMode {
         clawSlider = hardwareMap.get(DcMotor.class, "clawSlider");
         clawSlider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         clawSlider.setDirection(DcMotorSimple.Direction.REVERSE);
-        zeroClawSliderPos = clawSlider.getCurrentPosition();
-        zeroClawSliderPos = zeroClawSliderPos + zeroClawSliderPosCorrection;
-        maxClawSliderPos = clawSlider.getCurrentPosition() + 423;
+
+
+
         //clawSlider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //clawSlider.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -152,6 +152,10 @@ public class TeleOp2 extends OpMode {
     }
     private void ZeroPos() {
         if (gamepad2.y && YClicked) {
+            zeroClawSliderPos = clawSlider.getCurrentPosition();
+            zeroClawSliderPos = zeroClawSliderPos + zeroClawSliderPosCorrection;
+            maxClawSliderPos = clawSlider.getCurrentPosition() + 423;
+
 //            zeroArmSliderPos = armSlider.getCurrentPosition();
             clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             zeroClawSliderPos = clawSlider.getCurrentPosition() - zeroClawSliderPosCorrection;
