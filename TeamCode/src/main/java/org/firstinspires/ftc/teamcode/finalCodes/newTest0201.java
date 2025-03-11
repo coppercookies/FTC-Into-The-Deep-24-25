@@ -112,17 +112,17 @@ public class newTest0201 extends LinearOpMode {
 
         Actions.runBlocking(new SequentialAction(
                         new ParallelAction(
-                                moveToSub1
-                                //new ClawSliderAction(clawSlider,-2100,1)
+                                moveToSub1,
+                                new ClawSliderAction(clawSlider,-2100,1)
                         ),
                         new SequentialAction(
-                                //new ClawSliderAction(clawSlider, 325, 1.0),
+                                new ClawSliderAction(clawSlider, 325, 1.0),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         new ParallelAction(
-                                moveToBlockAndPush
-                                //new ClawSliderAction(clawSlider,1370,1.0)
+                                moveToBlockAndPush,
+                                new ClawSliderAction(clawSlider,1370,1.0)
                         ),
                         new SequentialAction(
                                 pushBlock2,
@@ -132,51 +132,51 @@ public class newTest0201 extends LinearOpMode {
                         ),
 ////425
                         new ParallelAction(
-                                moveToSub2
-                                //new ClawSliderAction(clawSlider,-1695,0.9)
+                                moveToSub2,
+                                new ClawSliderAction(clawSlider,-1695,0.9)
                         ),
                         new SequentialAction(
-                                //new ClawSliderAction(clawSlider, 350, 1.0),
+                                new ClawSliderAction(clawSlider, 350, 1.0),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         //Third spec
                         new ParallelAction(
-                                moveToPickup2
-                                //new ClawSliderAction(clawSlider, 1355, 0.8)
+                                moveToPickup2,
+                                new ClawSliderAction(clawSlider, 1355, 0.8)
                         ),
                         new SequentialAction(
                                 new PatientClawAction(claw,0.73)
                         ),
                         new ParallelAction(
-                                moveToSub3
-                                //new ClawSliderAction(clawSlider, -1695, 0.9)
+                                moveToSub3,
+                                new ClawSliderAction(clawSlider, -1695, 0.9)
                         ),
                         new SequentialAction(
-                                //new ClawSliderAction(clawSlider, 335, 1.0),
+                                new ClawSliderAction(clawSlider, 335, 1.0),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         //Fourth spec
                         new ParallelAction(
-                                moveToPickup3
-                                //new ClawSliderAction(clawSlider, 1365, 0.8)
+                                moveToPickup3,
+                                new ClawSliderAction(clawSlider, 1365, 0.8)
                         ),
                         new SequentialAction(
                                 new PatientClawAction(claw,0.73),
                                 wait05Seconds
                         ),
                         new ParallelAction(
-                                moveToSub4
-                                //new ClawSliderAction(clawSlider, -1705, 0.9)
+                                moveToSub4,
+                                new ClawSliderAction(clawSlider, -1705, 0.9)
                         ),
                         new SequentialAction(
-                                //new ClawSliderAction(clawSlider, 335 , 1.0),
+                                new ClawSliderAction(clawSlider, 335 , 1.0),
                                 new PatientClawAction(claw, 0.4)
                         ),
                         new ParallelAction(
-                                park
-                                //new ClawSliderAction(clawSlider,1785,1)
+                                park,
+                                new ClawSliderAction(clawSlider,1785,1)
                         )
                 )
         );
