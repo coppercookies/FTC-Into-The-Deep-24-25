@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.finalCodes;
+package org.firstinspires.ftc.teamcode.other;
 
 import androidx.annotation.NonNull;
 
@@ -50,7 +50,7 @@ public class RedFrontWithClaw extends LinearOpMode {
 
 
         Action wait1Second = drive.actionBuilder(beginPose)
-                .waitSeconds(1)
+                .waitSeconds(0.6)
                 .build();
 
         Action wait15Second = drive.actionBuilder(beginPose)
@@ -89,7 +89,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                 .build();
 
         Action turnToBlock2 = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(225)))
-                .strafeToLinearHeading(new Vector2d(-54, -43), Math.toRadians(90))//-55.6
+                .strafeToLinearHeading(new Vector2d(-54.7, -43), Math.toRadians(89))//-55.6
                 .build();
 
 
@@ -98,9 +98,9 @@ public class RedFrontWithClaw extends LinearOpMode {
                 .build();
 
         Action moveForwardBasket3 = drive.actionBuilder(new Pose2d(-52.5,-52.5,Math.toRadians(225)))
-                .strafeTo(new Vector2d(-55,-55))
+                .strafeTo(new Vector2d(-55.5,-55.5))
                 .build();
-        Action moveBackBasket3 = drive.actionBuilder(new Pose2d(-55,-55,Math.toRadians(225)))
+        Action moveBackBasket3 = drive.actionBuilder(new Pose2d(-55.5,-55.5,Math.toRadians(225)))
                 .waitSeconds(0.2)
                 .strafeTo(new Vector2d(-50,-50))
                 .build();
@@ -115,9 +115,9 @@ public class RedFrontWithClaw extends LinearOpMode {
                 new SequentialAction(
                     new ArmAction(arm, armSlider, 75,0.2),
                     wait1Second,
-                    new ArmClawAction(armClaw,0.73)
-
+                    new ArmClawAction(armClaw,0.92)
                 )
+
         );
         waitForStart();
 
@@ -134,7 +134,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                                moveForwardBasket,
                                new ArmAction(arm, armSlider,-100,1),
                                wait1Second,
-                               new ArmClawAction(armClaw,0),
+                               new ArmClawAction(armClaw,0.5),
                                new ArmAction(arm, armSlider,140,1),
                                moveBackBasket,
 
@@ -147,7 +147,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                             turnToBlock1,
                             wait1Second,
                             new ArmSliderAction(armSlider,690,1),
-                            new ArmClawAction(armClaw,0.73),
+                            new ArmClawAction(armClaw,0.92),
                             new ArmSliderAction(armSlider,-590,1)
                         ),
                         new ParallelAction(
@@ -157,17 +157,17 @@ public class RedFrontWithClaw extends LinearOpMode {
                         ),
                         //go to basket with 2nd block
                         new SequentialAction(
-                            new ArmSliderAction(armSlider,2370,1),
+                            new ArmSliderAction(armSlider,2225,1),//2370
 
                             moveForwardBasket2,
                             wait1Second,
 //                            new ArmAction(arm, armSlider,-100,1),
 //                            wait1Second,
-                            new ArmClawAction(armClaw,0),
+                            new ArmClawAction(armClaw,0.5),
                             new ArmAction(arm, armSlider,40,1),
                             moveBackBasket2,
 
-                            new ArmSliderAction(armSlider, -2425,1)
+                            new ArmSliderAction(armSlider, -2325,1)
                         ),
 
 
@@ -178,7 +178,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                         wait1Second,
                         new ArmSliderAction( armSlider, 935, 1),//875
                         wait1Second,
-                        new ArmClawAction(armClaw,0.73),
+                        new ArmClawAction(armClaw,0.92),
                         new ArmSliderAction(armSlider,-765,1)
                 ),
                 new ParallelAction(
@@ -192,7 +192,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                         moveForwardBasket3,
                         new ArmAction(arm, armSlider,-50,1),
                         wait1Second,
-                        new ArmClawAction(armClaw,0),
+                        new ArmClawAction(armClaw,0.5),
                         wait1Second,
                         new ArmAction(arm, armSlider,90,1),
                         moveBackBasket3
@@ -416,7 +416,7 @@ public class RedFrontWithClaw extends LinearOpMode {
                 armClaw.setPosition(armClawPos);
             }
 
-            if (timer.seconds() < 1) {
+            if (timer.seconds() < 0.3) {
                 return true;
             } else {
                 return false;

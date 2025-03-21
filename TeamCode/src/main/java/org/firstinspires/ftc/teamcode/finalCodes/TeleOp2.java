@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,7 @@ public class TeleOp2 extends OpMode {
 
     private DcMotor clawSlider;
     private int zeroClawSliderPos;
-    private final int zeroClawSliderPosCorrection = 520;
+    private final int zeroClawSliderPosCorrection = 470;
     private int maxClawSliderPos;
 
     private DcMotor arm;
@@ -51,7 +52,8 @@ public class TeleOp2 extends OpMode {
     private ServoImplEx armClaw;
     private CRServo pivotClaw;
 
-    //Sensors + etc
+
+    private Servo sweeper;    //Sensors + etc
     LED max_LED_red;
     LED max_LED_green;
     Servo LED_Headlight;
@@ -74,7 +76,7 @@ public class TeleOp2 extends OpMode {
 
         //        RServo = hardwareMap.get(CRServo.class, "RServo");
         //        LServo = hardwareMap.get(CRServo.class, "LServo");
-        //        pivotServo = hardwareMap.get(Servo.class, "pivotServo");
+        sweeper = hardwareMap.get(Servo.class, "sweeper");
         // Init IMU-- ------------------------------------------------------
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -98,22 +100,20 @@ public class TeleOp2 extends OpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        zeroArmPos = arm.getCurrentPosition();
-        telemetry.addData("CurrentArmPos", arm.getCurrentPosition());
+        int zeroArmPosCorrection = 80;
+        zeroArmPos = (int)ReadWrite.readFromFile("ZeroArmPos.txt") + zeroArmPosCorrection;
+        telemetry.addData("zeroArmPosfromFile", zeroArmPos);
 
-        int zeroArmPosCorrection = 80; //180 with flywheel intake for zero pos
-
-        zeroArmPos = zeroArmPos + zeroArmPosCorrection;
-        telemetry.addData("zeroArmPos", zeroArmPos);
-        maxPos = zeroArmPos + 1030 - zeroArmPosCorrection; // Add number for max
-        //it was - we changed to +
-        //reverseArm = false;
+        // -1185 + 1000 = -185
+        // Was 1030 on 3/21
+        maxPos = zeroArmPos + 950; // + zeroArmPosCorrection; // Add number for max
 
         // Init ArmSlider -----------------------------------------------------
         armSlider = hardwareMap.get(DcMotor.class, "armSlider");
         //armSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        zeroArmSliderPos = armSlider.getCurrentPosition();
-        maxArmSliderPos = zeroArmSliderPos + 2525;//2000
+        //zeroArmSliderPos = armSlider.getCurrentPosition();
+        zeroArmSliderPos = (int)ReadWrite.readFromFile("ZeroArmSliderPos.txt");
+        //maxArmSliderPos = zeroArmSliderPos + 2525;//2000
         maxArmSliderPos = zeroArmSliderPos + 2700;//2525
         telemetry.addData("CurrentArmSliderPos", armSlider.getCurrentPosition());
 
@@ -141,6 +141,7 @@ public class TeleOp2 extends OpMode {
         Headlight();
         ZeroPos();
         PivotClaw();
+        SweepServo();
     }
 
     private void Headlight() {
@@ -148,6 +149,14 @@ public class TeleOp2 extends OpMode {
             LED_Headlight.setPosition(1);
         else if (gamepad2.a)
             LED_Headlight.setPosition(0);
+    }
+    private void SweepServo() {
+        if (gamepad2.right_bumper) {
+            sweeper.setPosition(0.19);
+        } else{
+            sweeper.setPosition(0.58);
+        }
+
     }
     private void ZeroPos() {
         if (gamepad2.y && YClicked) {
@@ -202,8 +211,8 @@ public class TeleOp2 extends OpMode {
             //            }
         }
         else {
-            clawSliderPower = -0.1;
-            clawSliderPower = -0.09;
+            clawSliderPower = -0.055;
+
         }
 
         clawSlider.setPower(clawSliderPower);
@@ -325,9 +334,9 @@ public class TeleOp2 extends OpMode {
 
         armClaw.scaleRange(0, 1);
         if (gamepad1.x) {
-            armClaw.setPosition(0.05);//0.4
+            armClaw.setPosition(0.65);//0.4
         } else if (gamepad1.b) {
-            armClaw.setPosition(0.55);//0.695
+            armClaw.setPosition(0.92);//0.695
         }
     }
 
@@ -353,16 +362,24 @@ public class TeleOp2 extends OpMode {
         //max power over here is 1.0
         double drivePower = 1.0 - (0.63 * gamepad2.right_trigger);
 
-        if (gamepad2.a && AClicked) {
-            if (gamepadRateLimit.hasExpired() && gamepad2.a) {
-                imu.resetYaw();
-                gamepadRateLimit.reset();
-                AClicked = false;
-                //                max_LED_red.off();
-                //                max_LED_green.on();
-            }
-            telemetry.addData("AClicked", AClicked);
+        if (gamepadRateLimit.hasExpired() && gamepad2.start) {
+            imu.resetYaw();
+            gamepadRateLimit.reset();
         }
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
+
+
+//        if (gamepad2.a && AClicked) {
+//            if (gamepadRateLimit.hasExpired() && gamepad2.a) {
+//                imu.resetYaw();
+//                gamepadRateLimit.reset();
+//                AClicked = false;
+//                //                max_LED_red.off();
+//                //                max_LED_green.on();
+//            }
+//            telemetry.addData("AClicked", AClicked);
+//        }
 
         double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 

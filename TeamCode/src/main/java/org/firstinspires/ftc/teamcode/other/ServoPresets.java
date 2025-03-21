@@ -18,7 +18,7 @@ public class ServoPresets extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Servo armClaw = hardwareMap.get(Servo.class,"armClaw");
+        Servo sweeper = hardwareMap.get(Servo.class,"sweeper");
 
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -35,7 +35,7 @@ public class ServoPresets extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            armClaw.setPosition(servo_pos);
+            sweeper.setPosition(servo_pos);
 
 
             telemetry.addData("L Servo Pos: ", servo_pos);

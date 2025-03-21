@@ -1,19 +1,14 @@
-package org.firstinspires.ftc.teamcode.finalCodes;
+package org.firstinspires.ftc.teamcode.other;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.AngularVelConstraint;
-import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,9 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-import java.util.Arrays;
-
-@Autonomous (name = "4SpecTest3Dead")
+@Autonomous (name = "4Spec3Dead313")
 public class newTest0201 extends LinearOpMode {
 
     @Override
@@ -53,49 +46,50 @@ public class newTest0201 extends LinearOpMode {
         Action moveToBlockAndPush = drive.actionBuilder(new Pose2d(15,-31.5,Math.toRadians(180)))
                 .strafeToConstantHeading(new Vector2d(15,-34))
                 .splineTo(new Vector2d(33, -24), Math.toRadians(90))//35
-                .splineTo(new Vector2d(33, -14), Math.toRadians(90))
+                .splineTo(new Vector2d(33, -10), Math.toRadians(90))
                 //push block
-                .splineToConstantHeading(new Vector2d(45, -14), Math.toRadians(270))//48.2\------------------------------------------x
-                .splineToConstantHeading(new Vector2d(45, -51), Math.toRadians(90), new TranslationalVelConstraint(70))
+                .splineToConstantHeading(new Vector2d(48.2, -10), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(48.2, -51), Math.toRadians(90), new TranslationalVelConstraint(70))
                 .build();
 
-        Action pushBlock2 = drive.actionBuilder(new Pose2d(45,-51,Math.toRadians(360)))
-                .strafeTo(new Vector2d(45, -8))
-                .strafeTo(new Vector2d(59.5,-8))
-                .strafeTo(new Vector2d(59.5,-57), new TranslationalVelConstraint(85))
+        Action pushBlock2andpick = drive.actionBuilder(new Pose2d(48.2,-51,Math.toRadians(358)))
+                .strafeTo(new Vector2d(48.2, -8))
+                .strafeTo(new Vector2d(59,-8))
+                .strafeTo(new Vector2d(59,-61), new TranslationalVelConstraint(85))
+
                 .build();
 
-        Action moveToPickup1 = drive.actionBuilder(new Pose2d(59.5,-57,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(31, -54), new TranslationalVelConstraint(85))
-//                .strafeToConstantHeading(new Vector2d(31, -54))
-                .strafeToConstantHeading(new Vector2d(31,-62.5))
-                .build();
+//        Action moveToPickup1 = drive.actionBuilder(new Pose2d(59,-57,Math.toRadians(358)))
+//                .strafeToConstantHeading(new Vector2d(31, -54), new TranslationalVelConstraint(85))
+////                .strafeToConstantHeading(new Vector2d(31, -54))
+//                .strafeToConstantHeading(new Vector2d(31,-62))
+//                .build();
 
-        Action moveToSub2 = drive.actionBuilder(new Pose2d(31,-62.5,Math.toRadians(360)))
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(31,-62,Math.toRadians(358)))
                 .strafeToLinearHeading(new Vector2d(12, -32),Math.toRadians(180))
                 .build(); //9
 
         Action moveToPickup2 = drive.actionBuilder(new Pose2d(12, -32, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(31, -55),Math.toRadians(360))
-                .strafeTo(new Vector2d(31,-61.85))
+                .strafeToLinearHeading(new Vector2d(31, -55),Math.toRadians(358))
+                .strafeTo(new Vector2d(31,-62))
                 .build();
 
-        Action moveToSub3 = drive.actionBuilder(new Pose2d(31, -61.85, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(2, -32.25),Math.toRadians(180))
+        Action moveToSub3 = drive.actionBuilder(new Pose2d(31, -62, Math.toRadians(358)))
+                .strafeToLinearHeading(new Vector2d(8, -32),Math.toRadians(180))
                 .build();//6
 
-        Action moveToPickup3 = drive.actionBuilder(new Pose2d(2,-32.25,Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(28.6, -55),Math.toRadians(360))
-                .strafeTo(new Vector2d(31,-61.5))
+        Action moveToPickup3 = drive.actionBuilder(new Pose2d(8,-32,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(28.6, -55),Math.toRadians(358))
+                .strafeTo(new Vector2d(31,-62))
                 .build();
 
-        Action moveToSub4 = drive.actionBuilder(new Pose2d(31, -61.5, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(-2, -32), Math.toRadians(180))
+        Action moveToSub4 = drive.actionBuilder(new Pose2d(31, -62, Math.toRadians(358)))
+                .strafeToLinearHeading(new Vector2d(2, -32), Math.toRadians(180))
                 .build(); //3
 
-        Action park = drive.actionBuilder(new Pose2d(-2, -32, Math.toRadians(180)))
+        Action park = drive.actionBuilder(new Pose2d(2, -32, Math.toRadians(180)))
                 .strafeTo(new Vector2d(2,-40))
-                .strafeToLinearHeading(new Vector2d(45,-62),Math.toRadians(90), new TranslationalVelConstraint(120))
+                .strafeToLinearHeading(new Vector2d(45,-60),Math.toRadians(90), new TranslationalVelConstraint(120))
                 .build();
 
 // 2100-300-1375+1675-300-1375+1675-300-1375+1675-300-1820
@@ -116,17 +110,16 @@ public class newTest0201 extends LinearOpMode {
                                 new ClawSliderAction(clawSlider,-2100,1)
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 325, 1.0),
+                                new ClawSliderAction(clawSlider, 325, 0.8),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         new ParallelAction(
                                 moveToBlockAndPush,
-                                new ClawSliderAction(clawSlider,1370,1.0)
+                                new ClawSliderAction(clawSlider,1370,0.8)
                         ),
                         new SequentialAction(
-                                pushBlock2,
-                                moveToPickup1,
+                                pushBlock2andpick,
                                 new PatientClawAction(claw,0.73),
                                 wait05Seconds
                         ),
@@ -136,14 +129,14 @@ public class newTest0201 extends LinearOpMode {
                                 new ClawSliderAction(clawSlider,-1695,0.9)
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 350, 1.0),
+                                new ClawSliderAction(clawSlider, 325, 0.8),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         //Third spec
                         new ParallelAction(
                                 moveToPickup2,
-                                new ClawSliderAction(clawSlider, 1355, 0.8)
+                                new ClawSliderAction(clawSlider, 1370, 0.8)
                         ),
                         new SequentialAction(
                                 new PatientClawAction(claw,0.73)
@@ -153,14 +146,14 @@ public class newTest0201 extends LinearOpMode {
                                 new ClawSliderAction(clawSlider, -1695, 0.9)
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 335, 1.0),
+                                new ClawSliderAction(clawSlider, 325, 0.8),
                                 wait05Seconds,
                                 new PatientClawAction(claw, 0.4)
                         ),
                         //Fourth spec
                         new ParallelAction(
                                 moveToPickup3,
-                                new ClawSliderAction(clawSlider, 1365, 0.8)
+                                new ClawSliderAction(clawSlider, 1375, 0.8)
                         ),
                         new SequentialAction(
                                 new PatientClawAction(claw,0.73),
@@ -171,12 +164,12 @@ public class newTest0201 extends LinearOpMode {
                                 new ClawSliderAction(clawSlider, -1705, 0.9)
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 335 , 1.0),
+                                new ClawSliderAction(clawSlider, 330 , 0.8),
                                 new PatientClawAction(claw, 0.4)
                         ),
                         new ParallelAction(
                                 park,
-                                new ClawSliderAction(clawSlider,1785,1)
+                                new ClawSliderAction(clawSlider,1780,1)
                         )
                 )
         );

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.RRTest;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -27,6 +29,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
+@Disabled
 
 @Autonomous (name = "0129")
 public class RRTest0129 extends LinearOpMode {

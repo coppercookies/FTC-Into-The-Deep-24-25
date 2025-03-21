@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.finalCodes;
+package org.firstinspires.ftc.teamcode.other;
 
 import androidx.annotation.NonNull;
 
@@ -16,8 +16,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -28,41 +28,59 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
-@Autonomous (name = "RedBackFinal")
-public class newTest0102 extends LinearOpMode {
+@Disabled
+@Autonomous (name = "RedBack 3 Spec and Push")
+public class RedBackOLDSpecWithPush extends LinearOpMode {
 
-
-    @Override
-    public void runOpMode() {
-        Pose2d beginPose = new Pose2d(14.4, -61.5, Math.toRadians(180));
-
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-
-        VelConstraint baseVelConstraint = new MinVelConstraint(Arrays.asList(
-                new TranslationalVelConstraint(59),
-                new AngularVelConstraint(Math.toRadians(180))
-        ));
-        VelConstraint baseMoveToSub = new MinVelConstraint(Arrays.asList(
-                new TranslationalVelConstraint(76),
-                new AngularVelConstraint(Math.toRadians(180))
-        ));
-        //it worked at 50
-        AccelConstraint baseAccelConstraint = new ProfileAccelConstraint(-52, 52);
-
-
-
-//        VelConstraint baseVelConstraint = (robotPose, _path, _disp) -> {
-//            if (robotPose.position.x.value() > 24.0) {
-//                return 20.0;
-//            } else {
-//                return 50.0;
+    //Claw Class try
+//    public class Claw {
+//        private Servo claw;
+//
+//        public Claw(HardwareMap hardwareMap) {
+//            claw = hardwareMap.get(Servo.class, "claw");
+//        }
+//
+//        public class CloseClaw implements Action {
+//            @Override
+//            public boolean run(@NonNull TelemetryPacket packet) {
+//                claw.setPosition(0.7);
+//                return false;
 //            }
 //        }
+//        public Action closeClaw() {
+//            return new CloseClaw();
+//        }
+//
+//        public class OpenClaw implements Action {
+//            @Override
+//            public boolean run(@NonNull TelemetryPacket packet) {
+//                claw.setPosition(0);
+//                return false;
+//            }
+//        }
+//        public Action openClaw() {
+//            return new OpenClaw();
+//        }
+//    }
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+        Pose2d beginPose = new Pose2d(9, -61.5, Math.toRadians(180));
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         DcMotorEx clawSlider;
+
+        VelConstraint baseVelConstraint = new MinVelConstraint(Arrays.asList(
+                new TranslationalVelConstraint(45),
+                new AngularVelConstraint(Math.toRadians(180))
+        ));
+        AccelConstraint baseAccelConstraint = new ProfileAccelConstraint(-40, 40);
+
+
         ServoImplEx claw;
 
         claw = hardwareMap.get(ServoImplEx.class, "claw");
+
         clawSlider = hardwareMap.get(DcMotorEx.class, "clawSlider");
         clawSlider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -70,69 +88,50 @@ public class newTest0102 extends LinearOpMode {
                 new ClawAction(claw, 0.7)
         );
 
-        Action moveToSub1 = drive.actionBuilder(beginPose)
-                .strafeToConstantHeading(new Vector2d(15,-31.5), baseMoveToSub, baseAccelConstraint)
+
+        Action moveToSub = drive.actionBuilder(beginPose)
+                .strafeToConstantHeading(new Vector2d(0,-31.5))
                 .build();
 
-        Action moveToBlock = drive.actionBuilder(new Pose2d(15,-31.5,Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(34,-42),Math.toRadians(360), baseVelConstraint, baseAccelConstraint)
-
+        Action moveToBlock = drive.actionBuilder(new Pose2d(0,-31.5,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(34,-47),Math.toRadians(360),baseVelConstraint,baseAccelConstraint)
+//                .waitSeconds(2)
                 //Be above the block
-                .strafeToConstantHeading(new Vector2d(36,-5), baseVelConstraint, baseAccelConstraint)
-                .strafeToConstantHeading(new Vector2d(46,-5), baseVelConstraint, baseAccelConstraint)
+                .strafeToConstantHeading(new Vector2d(38,-5),baseVelConstraint,baseAccelConstraint)
+                //1/6
+                //.waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(48,-5),baseVelConstraint,baseAccelConstraint)
                 .build();
 
-        Action push2Blocks = drive.actionBuilder(new Pose2d(46,-5,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(46,-52), new TranslationalVelConstraint(90), baseAccelConstraint)
-                .strafeToConstantHeading(new Vector2d(46,-5) , new TranslationalVelConstraint(90), baseAccelConstraint)
+        Action pushBlock = drive.actionBuilder(new Pose2d(48,-5,Math.toRadians(360)))
+                .strafeToConstantHeading(new Vector2d(48,-54))//57
+                .waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(48,-45))
+//                .waitSeconds(1)
+                .strafeToConstantHeading(new Vector2d(31.3,-58.2))
 
-
-                .strafeToConstantHeading(new Vector2d(55,-5),baseVelConstraint, baseAccelConstraint)
-                .strafeToConstantHeading(new Vector2d(55,-52), new TranslationalVelConstraint(90), baseAccelConstraint)
+                //.waitSeconds(2)
+                .build();
+//
+        Action moveToSub2 = drive.actionBuilder(new Pose2d(31.3,-58.2,Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(4, -30.6),Math.toRadians(180))
                 .build();
 
-        Action moveToPickup1 = drive.actionBuilder(new Pose2d(55,-52,Math.toRadians(360)))
-                .strafeToConstantHeading(new Vector2d(55, -48), null, baseAccelConstraint)
-                .strafeToConstantHeading(new Vector2d(27.5,-59.2), null, baseAccelConstraint)
+        Action moveToPickup2 = drive.actionBuilder(new Pose2d(4,-30.6,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(31.6, -54),Math.toRadians(360))
+                .strafeTo(new Vector2d(31.6,-57.6))
+                .build();
+        Action moveToSub3 = drive.actionBuilder(new Pose2d(31.6,-57.6,Math.toRadians(360)))
+                .strafeToLinearHeading(new Vector2d(6, -30.6),Math.toRadians(180))
                 .build();
 
-        Action moveToSub2 = drive.actionBuilder(new Pose2d(27.5,-59.2,Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(10, -28),Math.toRadians(180),new TranslationalVelConstraint(90), baseAccelConstraint)
-                .build(); //9
+        Action pushBlock2 = drive.actionBuilder(new Pose2d(6,-30.6,Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(40,-44),Math.toRadians(360),baseVelConstraint,baseAccelConstraint)
 
-        Action moveToPickup2 = drive.actionBuilder(new Pose2d(10, -28, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(26.5, -50),Math.toRadians(360), baseMoveToSub, baseAccelConstraint)
-                .strafeTo(new Vector2d(26.5,-58.8), new TranslationalVelConstraint(8))
+                .strafeToConstantHeading(new Vector2d(45,-5),baseVelConstraint,baseAccelConstraint)
+                .strafeToConstantHeading(new Vector2d(58,-5),baseVelConstraint,baseAccelConstraint)
+                .strafeToConstantHeading(new Vector2d(58,-55),new TranslationalVelConstraint(80),baseAccelConstraint)
                 .build();
-
-        Action moveToSub3 = drive.actionBuilder(new Pose2d(26.5, -58.8, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(5, -28),Math.toRadians(180),baseMoveToSub, baseAccelConstraint)
-                .build();//6
-
-
-        Action moveToPickup3 = drive.actionBuilder(new Pose2d(5,-28, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(27.5, -50),Math.toRadians(360),baseVelConstraint, baseAccelConstraint)
-                .strafeTo(new Vector2d(27.5,-58.8), new TranslationalVelConstraint(8))
-                .build();
-
-        Action moveToSub4 = drive.actionBuilder(new Pose2d(27.5, -58.8, Math.toRadians(360)))
-                .strafeToLinearHeading(new Vector2d(1, -27), Math.toRadians(180), baseMoveToSub, baseAccelConstraint)
-                .build(); //3
-
-
-//        Action park = drive.actionBuilder(new Pose2d(5, -28, Math.toRadians(180)))
-//                .strafeToLinearHeading(new Vector2d(47,-56),Math.toRadians(90), new TranslationalVelConstraint(100)
-//                        ,new ProfileAccelConstraint(-80,80))
-//                .build();
-
-
-
-
-
-        Action turn = drive.actionBuilder((new Pose2d(1,-28,Math.toRadians(180))))
-                .strafeToLinearHeading(new Vector2d(3,-35),Math.toRadians(90))
-                .build();
-
 
 
 
@@ -142,12 +141,12 @@ public class newTest0102 extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
 
                         new ParallelAction(
-                                moveToSub1,
-                                 new ClawSliderAction(clawSlider,-2100,1)
+                                moveToSub,
+                                new ClawSliderAction(clawSlider,-2100,1)
                         ),
 
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
+                                new ClawSliderAction(clawSlider, 280, 0.8),
                                 new PatientClawAction(claw, 0.0)
                         ),
 
@@ -157,67 +156,89 @@ public class newTest0102 extends LinearOpMode {
                         ),
 
                         new SequentialAction(
-                                push2Blocks,
-                                moveToPickup1,
+                                pushBlock,
+                                //The wait is in pushBlock itself
                                 new PatientClawAction(claw,0.7)
                         ),
-//425
+
                         new ParallelAction(
                                 moveToSub2,
-                                new ClawSliderAction(clawSlider,-1695,0.9)
+                                new ClawSliderAction(clawSlider,-1700,0.5)
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
+                                new ClawSliderAction(clawSlider, 315, 0.8),
                                 new PatientClawAction(claw, 0.0)
                         ),
-                        //Third spec
                         new ParallelAction(
                                 moveToPickup2,
                                 new ClawSliderAction(clawSlider, 1395, 0.8)
                         ),
                         new SequentialAction(
-                                new PatientClawAction(claw,0.7)
-
+                                new PatientClawAction(claw,0.7),
+                                new ClawSliderAction(clawSlider, -400, 0.8)
                         ),
                         new ParallelAction(
                                 moveToSub3,
-                                new ClawSliderAction(clawSlider, -1695, 0.9)
+                                new ClawSliderAction(clawSlider, -1300, 0.8)
 
                         ),
                         new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300, 0.8),
+                                new ClawSliderAction(clawSlider, 315, 0.8),
                                 new PatientClawAction(claw, 0.0)
 
                         ),
-                        //Fourth spec
                         new ParallelAction(
-                                moveToPickup3,
-                                new ClawSliderAction(clawSlider, 1395, 0.8)
-                        ),
-                        new SequentialAction(
-                                new PatientClawAction(claw,0.7)
-
-                        ),
-                        new ParallelAction(
-                                moveToSub4,
-                                new ClawSliderAction(clawSlider, -1695, 0.9)
-
-                        ),
-                        new SequentialAction(
-                                new ClawSliderAction(clawSlider, 300 , 0.8),
-                                new PatientClawAction(claw, 0.0)
-
-                        ),
-                        //park
-                        new ParallelAction(
-                                turn,
-                                new ClawSliderAction(clawSlider,1820,1)
+                                pushBlock2,
+                                new ClawSliderAction(clawSlider,1780,0.8 )
                         )
 
 
 
                 )
         );
+
+        ///////////////////////////////
+//        .stopAndAdd(new ClawSliderAction(clawSlider,1000,-0.3))
+//                .waitSeconds(2)
+//
+//                .strafeToLinearHeading(new Vector2d(34,-47),Math.toRadians(360))
+//                .waitSeconds(2)
+//                //Be above the block
+//                .strafeToConstantHeading(new Vector2d(38,-10))
+////                        .waitSeconds(2)
+//                .lineToX(47)
+//
+//
+//                .strafeToConstantHeading(new Vector2d(45,-61.5))
+//                .waitSeconds(4)
+//                .strafeToConstantHeading(new Vector2d(45,-50))
+//
+//
+//                .strafeToLinearHeading(new Vector2d(0, -32),Math.toRadians(180))
+//                .waitSeconds(5)
+//
+//                .build()
+//////////////////////////////////////
+//                        .stopAndAdd(new ClawAction(claw, 0.5))
+//
+//                        .strafeToLinearHeading(new Vector2d(34,-47),Math.toRadians(360))
+//                        .waitSeconds(2)
+//                        //Be above the block
+//                        .strafeToConstantHeading(new Vector2d(38,-10))
+//                        .waitSeconds(2)
+//                        .lineToX(47)
+//
+//
+//                        .strafeToConstantHeading(new Vector2d(45,-61.5))
+//                        .waitSeconds(4)
+//                        .strafeToConstantHeading(new Vector2d(45,-50))
+//
+//
+//                        .strafeToLinearHeading(new Vector2d(0, -32),Math.toRadians(180))
+//                        .waitSeconds(5)
+
+
+
 
 
     }
@@ -286,33 +307,36 @@ public class newTest0102 extends LinearOpMode {
                 return true;
             }
 
+//            if (armSlider.getCurrentPosition() != armSliderPos) {
+//                return true;
+//            }
 
             armSlider.setPower(0);
             return false;
         }
     }
 
-    public class IntakeAction implements Action {
-        CRServo RServo;
-        CRServo LServo;
-        CRServo topTake;
-        double intakePower;
-
-        public IntakeAction(CRServo RServo,CRServo LServo, CRServo topTake, double intakePower) {
-            this.RServo = RServo;
-            this.LServo = LServo;
-            this.topTake = topTake;
-            this.intakePower = intakePower;
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            RServo.setPower(intakePower);
-            LServo.setPower(-intakePower);
-            topTake.setPower(intakePower);
-            return false;
-        }
-    }
+    //    public class IntakeAction implements Action {
+//        CRServo RServo;
+//        CRServo LServo;
+//        CRServo topTake;
+//        double intakePower;
+//
+//        public IntakeAction(CRServo RServo,CRServo LServo, CRServo topTake, double intakePower) {
+//            this.RServo = RServo;
+//            this.LServo = LServo;
+//            this.topTake = topTake;
+//            this.intakePower = intakePower;
+//        }
+//
+//        @Override
+//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+//            RServo.setPower(intakePower);
+//            LServo.setPower(-intakePower);
+//            topTake.setPower(intakePower);
+//            return false;
+//        }
+//    }
     ///////////////////////////////////////////////////////////////////////////
     public class ClawAction implements Action {
         ServoImplEx claw;
@@ -349,7 +373,7 @@ public class newTest0102 extends LinearOpMode {
                 claw.setPosition(clawPos);
             }
 
-            if (timer.seconds() < 0.1) {
+            if (timer.seconds() < 0.25) {
                 return true;
             } else {
                 return false;
@@ -389,17 +413,21 @@ public class newTest0102 extends LinearOpMode {
                 initialized = true;
             }
 
-            if (goingUp) {
+            if (goingUp)
+            {
                 if (clawSlider.getCurrentPosition() >= clawSlideEndPos) {
                     return true;
                 }
             }
-            else {
+            else
+            {
                 if (clawSlider.getCurrentPosition() <= clawSlideEndPos) {
                     return true;
                 }
             }
-
+//            if (armSlider.getCurrentPosition() != armSliderPos) {
+//                return true;
+//            }
             //Negative goes up
             clawSlider.setPower(-0.15);
             return false;
